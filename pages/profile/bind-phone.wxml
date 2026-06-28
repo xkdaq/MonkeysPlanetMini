@@ -1,0 +1,65 @@
+<!--pages/profile/bind-phone.wxml-->
+<view class="bind-phone-container">
+  <!-- 已绑定提示 -->
+  <view wx:if="{{isBound}}" class="bound-section">
+    <view class="bound-icon">📱</view>
+    <view class="bound-title">已绑定手机号</view>
+    <view class="bound-phone">{{boundPhone}}</view>
+    <view class="bound-tip">您已绑定手机号，如需修改请联系客服</view>
+  </view>
+
+  <!-- 未绑定：手机号输入 -->
+  <view wx:if="{{!isBound}}" class="form-section">
+    <view class="section-title">手机号</view>
+    <view class="input-wrap">
+      <input class="phone-input" 
+             type="number"
+             placeholder="请输入手机号" 
+             value="{{phone}}"
+             bindinput="onPhoneInput"
+             maxlength="11"/>
+    </view>
+  </view>
+
+  <!-- 未绑定：验证码 -->
+  <view wx:if="{{!isBound}}" class="form-section">
+    <view class="section-title">验证码</view>
+    <view class="code-wrap">
+      <input class="code-input" 
+             type="number"
+             placeholder="请输入验证码" 
+             value="{{code}}"
+             bindinput="onCodeInput"
+             maxlength="6"/>
+      <button class="send-btn {{countdown > 0 ? 'disabled' : ''}}" 
+              bindtap="sendCode"
+              disabled="{{countdown > 0}}">
+        {{countdown > 0 ? countdown + 's' : '获取验证码'}}
+      </button>
+    </view>
+  </view>
+
+  <!-- 未绑定：设置密码（必填） -->
+  <view wx:if="{{!isBound}}" class="form-section">
+    <view class="section-title">设置密码</view>
+    <view class="input-wrap">
+      <input class="password-input" 
+             type="password"
+             placeholder="请设置登录密码（6-20位）" 
+             value="{{password}}"
+             bindinput="onPasswordInput"
+             maxlength="20"/>
+    </view>
+    <view class="tips">绑定后可用手机号+密码登录</view>
+  </view>
+
+  <!-- 未绑定：提交按钮 -->
+  <view wx:if="{{!isBound}}" class="submit-section">
+    <button class="submit-btn" bindtap="onSubmit">绑定手机号</button>
+  </view>
+
+  <!-- 未绑定：说明 -->
+  <view wx:if="{{!isBound}}" class="notice">
+    <text>绑定手机号后，您可以使用手机号登录，也可以通过手机号找回密码。</text>
+  </view>
+</view>

@@ -1,0 +1,91 @@
+<!--pages/favorite/favorite.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header-bar">
+    <text class="total-text" wx:if="{{grouped}}">共 {{categories.length}} 个章节</text>
+    <text class="total-text" wx:else>共 {{favorites.length}} 道收藏</text>
+  </view>
+
+  <!-- 按分类分组的收藏列表 -->
+  <view class="category-list" wx:if="{{grouped && categories.length > 0}}">
+    <view class="category-item" wx:for="{{categories}}" wx:for-index="catIndex" wx:key="categoryId">
+      <!-- 分类标题 -->
+      <view class="category-header" bindtap="toggleCategory" data-index="{{catIndex}}">
+        <view class="category-info">
+          <text class="category-name">{{item.categoryName}}</text>
+          <text class="category-count">{{item.count}} 道收藏</text>
+        </view>
+        <view class="category-actions">
+          <text class="practice-category-btn" catchtap="startCategoryPractice" data-index="{{catIndex}}">练习</text>
+          <text class="expand-icon {{expandedCategories.includes(catIndex) ? 'expanded' : ''}}">▼</text>
+        </view>
+      </view>
+      
+      <!-- 分类下的收藏列表 -->
+      <view class="category-favorites" wx:if="{{expandedCategories.includes(catIndex)}}">
+        <view 
+          class="favorite-item"
+          wx:for="{{item.favorites}}"
+          wx:for-item="fav"
+          wx:for-index="favIndex"
+          wx:key="id"
+          bindtap="onFavoriteTap"
+          data-category-index="{{catIndex}}"
+          data-fav-index="{{favIndex}}"
+        >
+          <view class="favorite-content">
+            <view class="question-text">{{fav.question.content}}</view>
+            <view class="question-info">
+              <text class="type-tag" wx:if="{{fav.question.type === 1}}">单选</text>
+              <text class="type-tag" wx:if="{{fav.question.type === 2}}">多选</text>
+              <text class="type-tag" wx:if="{{fav.question.type === 3}}">判断</text>
+              <text class="type-tag" wx:if="{{fav.question.type === 4}}">填空</text>
+              <text class="type-tag" wx:if="{{fav.question.type === 5}}">问答</text>
+              <text class="create-time">{{fav.createTime}}</text>
+            </view>
+          </view>
+          <view class="favorite-actions">
+            <text class="cancel-btn" catchtap="onCancelTap" data-id="{{fav.questionId}}" data-category-index="{{catIndex}}" data-fav-index="{{favIndex}}">取消收藏</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 平铺收藏列表（兼容旧格式） -->
+  <view class="favorite-list" wx:if="{{!grouped && favorites.length > 0}}">
+    <view 
+      class="favorite-item"
+      wx:for="{{favorites}}"
+      wx:key="id"
+      bindtap="onFavoriteTap"
+      data-index="{{index}}"
+    >
+      <view class="favorite-content">
+        <view class="question-text">{{item.question.content}}</view>
+        <view class="question-info">
+          <text class="type-tag" wx:if="{{item.question.type === 1}}">单选</text>
+          <text class="type-tag" wx:if="{{item.question.type === 2}}">多选</text>
+          <text class="type-tag" wx:if="{{item.question.type === 3}}">判断</text>
+          <text class="type-tag" wx:if="{{item.question.type === 4}}">填空</text>
+          <text class="type-tag" wx:if="{{item.question.type === 5}}">问答</text>
+          <text class="create-time">{{item.createTime}}</text>
+        </view>
+      </view>
+      <view class="favorite-actions">
+        <text class="cancel-btn" catchtap="onCancelTap" data-id="{{item.questionId}}" data-index="{{index}}">取消收藏</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{(grouped && categories.length === 0) || (!grouped && favorites.length === 0)}}">
+    <text>暂无收藏题目</text>
+    <text class="sub-text">点击题目收藏按钮添加收藏</text>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="footer-bar" wx:if="{{(grouped && categories.length > 0) || (!grouped && favorites.length > 0)}}">
+    <button class="btn btn-primary practice-btn" bindtap="startPractice">开始练习</button>
+  </view>
+</view>

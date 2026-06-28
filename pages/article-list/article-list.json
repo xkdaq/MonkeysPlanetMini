@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "最新公告",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "onReachBottomDistance": 50
+}

@@ -1,0 +1,83 @@
+<!--pages/feedback/feedback.wxml-->
+<view class="feedback-container">
+  <!-- 反馈类型选择 -->
+  <view class="form-section">
+    <view class="section-title">反馈类型</view>
+    <view class="type-list">
+      <view class="type-item {{feedbackType === item.value ? 'active' : ''}}" 
+            wx:for="{{typeList}}" 
+            wx:key="value"
+            data-value="{{item.value}}"
+            bindtap="onTypeSelect">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 反馈标题 -->
+  <view class="form-section">
+    <view class="section-title">标题</view>
+    <input class="title-input" 
+           placeholder="请简要描述您的问题" 
+           value="{{title}}"
+           bindinput="onTitleInput"
+           maxlength="50"/>
+  </view>
+
+  <!-- 反馈内容 -->
+  <view class="form-section">
+    <view class="section-title">详细描述</view>
+    <textarea class="content-textarea" 
+              placeholder="请详细描述您遇到的问题或建议，我们会尽快处理..." 
+              value="{{content}}"
+              bindinput="onContentInput"
+              maxlength="500"/>
+    <view class="word-count">{{content.length}}/500</view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="form-section">
+    <view class="section-title">联系方式（选填）</view>
+    <input class="contact-input" 
+           placeholder="请留下您的邮箱或手机号，方便我们联系您" 
+           value="{{contact}}"
+           bindinput="onContactInput"/>
+  </view>
+
+  <!-- 图片上传功能（暂时隐藏，待后续完善隐私协议后开放）
+  <view class="form-section">
+    <view class="section-title">图片（选填，最多3张）</view>
+    <view class="image-list">
+      <view class="image-item" wx:for="{{images}}" wx:key="index">
+        <image src="{{item}}" mode="aspectFill" bindtap="previewImage" data-url="{{item}}"/>
+        <view class="delete-btn" data-index="{{index}}" bindtap="deleteImage">×</view>
+      </view>
+      <view class="upload-btn" wx:if="{{images.length < 3}}" bindtap="chooseImage">
+        <text class="plus">+</text>
+        <text class="upload-text">上传图片</text>
+      </view>
+    </view>
+  </view>
+  -->
+
+  <!-- 隐私授权声明 -->
+  <view class="privacy-agree-section">
+    <view class="privacy-agree-row" bindtap="toggleAgree">
+      <view class="checkbox {{privacyAgreed ? 'checked' : ''}}">
+        <text wx:if="{{privacyAgreed}}" class="check-icon">✓</text>
+      </view>
+      <view class="privacy-agree-text">
+        <text>我已阅读并同意</text>
+        <text class="privacy-link" catchtap="goPrivacy">《隐私政策》</text>
+        <text>及</text>
+        <text class="privacy-link" catchtap="goAgreement">《用户服务协议》</text>
+        <text>，提交即视为同意以上协议。</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="submit-btn {{!privacyAgreed ? 'disabled' : ''}}" bindtap="onSubmit">提交反馈</button>
+  </view>
+</view>

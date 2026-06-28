@@ -1,0 +1,46 @@
+<!--components/privacy-modal/privacy-modal.wxml-->
+<view class="privacy-modal {{show ? 'show' : ''}}">
+  <view class="modal-mask" bindtap="onMaskTap"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">隐私保护指引</text>
+    </view>
+    
+    <view class="modal-body">
+      <view class="privacy-icon">
+        <image src="/images/logo.png" mode="aspectFit"/>
+      </view>
+      
+      <view class="privacy-text">
+        <text class="main-text">感谢您使用猴哥星球！</text>
+        <text class="sub-text">
+          我们非常重视您的隐私和个人信息保护。在使用我们的服务之前，请您仔细阅读并同意
+          <text class="link" bindtap="onUserAgreement">《用户服务协议》</text>
+          和
+          <text class="link" bindtap="onPrivacyPolicy">《隐私政策》</text>
+          。
+        </text>
+      </view>
+      
+      <view class="privacy-list">
+        <view class="privacy-item">
+          <text class="item-dot">•</text>
+          <text class="item-text">我们需要获取您的微信昵称、头像等公开信息用于账号登录</text>
+        </view>
+        <view class="privacy-item">
+          <text class="item-dot">•</text>
+          <text class="item-text">我们会记录您的学习进度、答题记录以提供个性化服务</text>
+        </view>
+        <view class="privacy-item">
+          <text class="item-dot">•</text>
+          <text class="item-text">我们会收集设备信息以优化产品体验和保障服务安全</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="modal-footer">
+      <button class="btn-disagree" bindtap="onDisagree">不同意</button>
+      <button class="btn-agree" bindtap="onAgree">同意并继续</button>
+    </view>
+  </view>
+</view>

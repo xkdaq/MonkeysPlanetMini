@@ -1,0 +1,16 @@
+# 敏感配置文件（包含接口加密密钥、API地址等）
+utils/config.js
+
+# Node.js依赖
+node_modules/
+miniprogram_npm/
+
+# 微信开发者工具私有配置
+project.private.config.json
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log

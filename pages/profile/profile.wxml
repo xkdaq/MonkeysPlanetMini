@@ -1,0 +1,93 @@
+<!--pages/profile/profile.wxml-->
+<view class="profile-container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <block wx:if="{{isLogin}}">
+      <view class="user-info">
+        <view class="avatar-wrap">
+          <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"/>
+        </view>
+        <view class="user-detail">
+          <view class="nickname-wrap">
+            <text class="nickname">{{userInfo.nickname || '微信用户'}}</text>
+            <image class="gender-icon" wx:if="{{userInfo.gender === 1}}" src="/images/icon-nan.png" mode="aspectFit"/>
+            <image class="gender-icon" wx:elif="{{userInfo.gender === 2}}" src="/images/icon-nv.png" mode="aspectFit"/>
+          </view>
+          <text class="username">ID: {{userInfo.username || '用户_' + userInfo.id}}</text>
+        </view>
+        <view class="edit-btn" bindtap="onEditProfile">
+          <text>编辑</text>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="login-section">
+        <view class="avatar-wrap default-avatar">
+          <image class="avatar" src="/images/default-avatar.png" mode="aspectFill"/>
+        </view>
+        <text class="login-tip">登录后享受更多功能</text>
+        <button class="login-btn" bindtap="onLogin">立即登录</button>
+      </view>
+    </block>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="menu-card" wx:if="{{isLogin}}">
+    <!-- 绑定手机号 -->
+    <view class="menu-item" bindtap="onBindPhone">
+      <view class="menu-icon-wrap">
+        <image class="menu-icon-img" src="/images/mine-bind-phone.png" mode="aspectFit"/>
+      </view>
+      <text class="menu-text">绑定手机号</text>
+      <text class="menu-badge" wx:if="{{!userInfo.hasPhone}}">未绑定</text>
+      <text class="menu-badge bound" wx:if="{{userInfo.hasPhone}}">已绑定</text>
+      <image class="menu-arrow-img" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+    <!-- 修改密码（仅已绑定手机号的用户显示） -->
+    <view class="menu-item" wx:if="{{userInfo.hasPhone}}" bindtap="onChangePassword">
+      <view class="menu-icon-wrap">
+        <image class="menu-icon-img" src="/images/mine-change-pwd.png" mode="aspectFit"/>
+      </view>
+      <text class="menu-text">修改密码</text>
+      <image class="menu-arrow-img" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+    <view class="menu-item" bindtap="onStudyRecords">
+      <view class="menu-icon-wrap">
+        <image class="menu-icon-img" src="/images/mine-study.png" mode="aspectFit"/>
+      </view>
+      <text class="menu-text">学习记录</text>
+      <image class="menu-arrow-img" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+  </view>
+
+  <!-- 其他功能 -->
+  <view class="menu-card">
+    <view class="menu-item" bindtap="goToSettings">
+      <view class="menu-icon-wrap">
+        <image class="menu-icon-img" src="/images/mine-setting.png" mode="aspectFit"/>
+      </view>
+      <text class="menu-text">设置</text>
+      <image class="menu-arrow-img" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+    <view class="menu-item" bindtap="onAbout">
+      <view class="menu-icon-wrap">
+        <image class="menu-icon-img" src="/images/mine-about-us.png" mode="aspectFit"/>
+      </view>
+      <text class="menu-text">关于我们</text>
+      <image class="menu-arrow-img" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+    <!-- 问题反馈功能 -->
+    <view class="menu-item" bindtap="onFeedback">
+      <view class="menu-icon-wrap">
+        <image class="menu-icon-img" src="/images/mine-hao-ping.png" mode="aspectFit"/>
+      </view>
+      <text class="menu-text">问题反馈</text>
+      <image class="menu-arrow-img" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section" wx:if="{{isLogin}}">
+    <button class="logout-btn" bindtap="onLogout">退出登录</button>
+  </view>
+</view>

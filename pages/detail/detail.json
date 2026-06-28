@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "详情",
+  "usingComponents": {
+    "mp-html": "../../miniprogram_npm/mp-html/index"
+  }
+}

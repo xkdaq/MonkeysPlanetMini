@@ -1,0 +1,177 @@
+/* pages/favorite/favorite.wxss */
+
+.header-bar {
+  padding: 20rpx 30rpx;
+  background: var(--white);
+  margin: 0 14rpx 20rpx 14rpx;
+  border-radius: 8rpx;
+}
+
+.total-text {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+}
+
+/* 分类列表 */
+.category-list {
+  padding: 0;
+  padding-bottom: 120rpx;
+}
+
+.category-item {
+  background: var(--white);
+  border-radius: 16rpx;
+  margin: 0 14rpx 20rpx 14rpx;
+  overflow: hidden;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  background: #f8f9fa;
+}
+
+.category-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.category-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8rpx;
+}
+
+.category-count {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.category-actions {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.practice-category-btn {
+  font-size: 26rpx;
+  color: var(--primary-color);
+  padding: 8rpx 20rpx;
+  background: var(--primary-light);
+  border-radius: 24rpx;
+}
+
+.expand-icon {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+  transition: transform 0.3s;
+}
+
+.expand-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.category-favorites {
+  padding: 20rpx 30rpx;
+}
+
+/* 收藏列表 */
+.favorite-list {
+  padding: 0 30rpx;
+  padding-bottom: 120rpx;
+}
+
+.favorite-item {
+  background: var(--white);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.favorite-content {
+  margin-bottom: 20rpx;
+}
+
+.question-text {
+  font-size: 30rpx;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.question-info {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.type-tag {
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-size: 24rpx;
+  border-radius: 8rpx;
+}
+
+.create-time {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+.favorite-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20rpx;
+  border-top: 2rpx solid var(--border-color);
+}
+
+.cancel-btn {
+  font-size: 26rpx;
+  color: var(--text-tertiary);
+  padding: 10rpx 20rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.empty-state text {
+  font-size: 32rpx;
+  color: var(--text-secondary);
+}
+
+.empty-state .sub-text {
+  font-size: 26rpx;
+  color: var(--text-tertiary);
+  margin-top: 16rpx;
+}
+
+/* 底部栏 */
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: var(--white);
+  border-top: 2rpx solid var(--border-color);
+}
+
+.practice-btn {
+  width: 100%;
+}

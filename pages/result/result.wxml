@@ -1,0 +1,45 @@
+<!--pages/result/result.wxml-->
+<view class="result-container">
+  <!-- 成绩卡片 -->
+  <view class="result-card">
+    <view class="result-title">练习完成</view>
+    
+    <!-- 正确率圆环 -->
+    <view class="accuracy-circle">
+      <view class="circle-inner">
+        <text class="accuracy-value">{{accuracy}}%</text>
+        <text class="accuracy-label">正确率</text>
+      </view>
+    </view>
+
+    <!-- 统计数据 -->
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-value correct">{{correct}}</text>
+        <text class="stat-label">答对</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value wrong">{{wrong}}</text>
+        <text class="stat-label">答错</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{total}}</text>
+        <text class="stat-label">总题数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{formatTime(duration)}}</text>
+        <text class="stat-label">用时</text>
+      </view>
+    </view>
+
+    <!-- 评价 -->
+    <view class="evaluation">{{getEvaluation()}}</view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="btn btn-default" bindtap="onBackHome">返回首页</button>
+    <button class="btn btn-primary" bindtap="onRetry" wx:if="{{wrong > 0}}">查看错题</button>
+    <button class="btn btn-primary" bindtap="onRetry">再来一次</button>
+  </view>
+</view>

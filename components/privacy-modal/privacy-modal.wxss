@@ -1,0 +1,160 @@
+/* components/privacy-modal/privacy-modal.wxss */
+.privacy-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.privacy-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+  position: relative;
+  width: 80%;
+  max-width: 320px;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.privacy-modal.show .modal-content {
+  transform: scale(1);
+}
+
+.modal-header {
+  padding: 20px 20px 10px;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-body {
+  padding: 0 20px 20px;
+}
+
+.privacy-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.privacy-icon image {
+  width: 60px;
+  height: 60px;
+}
+
+.privacy-text {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.main-text {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.sub-text {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.link {
+  color: #07c160;
+  text-decoration: underline;
+}
+
+.privacy-list {
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 12px 15px;
+}
+
+.privacy-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.privacy-item:last-child {
+  margin-bottom: 0;
+}
+
+.item-dot {
+  color: #07c160;
+  margin-right: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.item-text {
+  flex: 1;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 1px solid #eee;
+}
+
+.btn-disagree,
+.btn-agree {
+  flex: 1;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-size: 16px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.btn-disagree {
+  color: #999;
+  border-right: 1px solid #eee;
+}
+
+.btn-disagree::after {
+  border: none;
+}
+
+.btn-agree {
+  color: #07c160;
+  font-weight: 500;
+}
+
+.btn-agree::after {
+  border: none;
+}

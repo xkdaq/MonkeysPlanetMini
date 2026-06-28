@@ -1,0 +1,253 @@
+<!--pages/practice/practice.wxml-->
+<view class="practice-container">
+  <!-- 顶部导航 -->
+  <view class="practice-header">
+    <view class="header-top">
+      <view class="progress-info">
+        <text class="current-index">{{currentIndex + 1}}</text>
+        <text class="total-count">/{{totalCount}}</text>
+      </view>
+      <view class="mode-switch">
+        <view class="mode-item {{practiceMode === 'answer' ? 'active' : ''}}" bindtap="onModeChange" data-mode="answer">答题</view>
+        <view class="mode-item {{practiceMode === 'study' ? 'active' : ''}}" bindtap="onModeChange" data-mode="study">背题</view>
+      </view>
+    </view>
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{((currentIndex + 1) / totalCount) * 100}}%"></view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" hidden="{{!loading}}">
+    <view class="loading">加载中...</view>
+  </view>
+
+  <!-- 题目内容 -->
+  <view class="question-content" hidden="{{loading}}">
+    <!-- 题目卡片 -->
+    <view class="question-card">
+      <view class="question-category" wx:if="{{currentQuestion.categoryName}}">
+        <text>{{currentQuestion.categoryName}}</text>
+      </view>
+      <rich-text nodes="{{questionTitleWithType}}"></rich-text>
+    </view>
+
+    <!-- 选项列表 -->
+    <view class="options-list" wx:if="{{currentQuestion.type === 1 || currentQuestion.type === 2 || currentQuestion.type === 3}}">
+      <view 
+        class="option-item {{optionClasses[item.label] || ''}}"
+        wx:for="{{questionOptions}}"
+        wx:key="label"
+        bindtap="onOptionSelect"
+        data-label="{{item.label}}"
+      >
+        <view class="option-label">{{item.label}}</view>
+        <view class="option-content">
+          <rich-text nodes="{{item.content}}"></rich-text>
+        </view>
+        <view class="option-status" wx:if="{{isAnswered}}">
+          <text wx:if="{{currentQuestion.answer && currentQuestion.answer.includes(item.label)}}">✓</text>
+          <text wx:elif="{{userAnswer.includes(item.label)}}">✗</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 填空题/问答题输入 -->
+    <view class="text-answer" wx:if="{{currentQuestion.type === 4 || currentQuestion.type === 5}}">
+      <textarea 
+        class="answer-input"
+        placeholder="请输入答案"
+        value="{{userAnswer}}"
+        bindinput="onTextInput"
+        disabled="{{isAnswered}}"
+      />
+      <button class="btn btn-primary submit-btn" bindtap="onSubmitAnswer" wx:if="{{!isAnswered}}">提交答案</button>
+    </view>
+
+    <!-- 多选题提交按钮 -->
+    <button class="btn btn-primary submit-btn" bindtap="onSubmitAnswer" wx:if="{{currentQuestion.type === 2 && !isAnswered && userAnswer}}">提交答案</button>
+
+    <!-- 答案解析 -->
+    <view class="analysis-section" wx:if="{{showAnalysis}}">
+      <!-- <view class="divider"></view> -->
+      
+      <!-- 答案对比区域 -->
+      <view class="answer-compare">
+        <view class="compare-item">
+          <text class="compare-label">正确答案</text>
+          <text class="compare-value correct">{{currentQuestion.answer}}</text>
+        </view>
+        <view class="compare-item">
+          <text class="compare-label">你的答案</text>
+          <text class="compare-value {{isCorrect ? 'correct' : 'wrong'}}">{{userAnswer || '未作答'}}</text>
+        </view>
+      </view>
+      
+      <!-- 解析区域 -->
+      <view class="analysis-content" wx:if="{{currentQuestion.analysis}}">
+        <view class="analysis-header">
+          <text class="analysis-label">文本解析</text>
+          <view class="analysis-actions">
+            <view class="action-btn" bindtap="copyAnalysis">
+              <image class="action-icon" src="/images/icon_copy.png" mode="aspectFit"/>
+              <text>复制解析</text>
+            </view>
+            <view class="action-btn" bindtap="showReportModal">
+              <image class="action-icon" src="/images/icon_edit.png" mode="aspectFit"/>
+              <text>纠错</text>
+            </view>
+          </view>
+        </view>
+        <view class="analysis-body">
+          <rich-text class="analysis-text" nodes="{{currentQuestion.analysis}}"></rich-text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 答题卡弹窗 -->
+  <view class="card-modal" wx:if="{{showCardModal}}">
+    <view class="card-mask" bindtap="hideCardModal"></view>
+    <view class="card-content">
+      <view class="card-title">答题卡</view>
+      <view class="card-legend">
+        <view class="legend-item">
+          <view class="legend-dot correct"></view>
+          <text>答对</text>
+        </view>
+        <view class="legend-item">
+          <view class="legend-dot wrong"></view>
+          <text>答错</text>
+        </view>
+        <view class="legend-item">
+          <view class="legend-dot missed"></view>
+          <text>漏选</text>
+        </view>
+        <view class="legend-item">
+          <view class="legend-dot unanswered"></view>
+          <text>未答</text>
+        </view>
+      </view>
+      <view class="card-grid">
+        <view 
+          class="card-item {{cardItemClasses[index] || ''}}" 
+          wx:for="{{questions}}" 
+          wx:for-index="index"
+          wx:key="id"
+          bindtap="onCardItemTap"
+          data-index="{{index}}"
+        >
+          {{index + 1}}
+        </view>
+      </view>
+      <view class="card-actions">
+        <view class="card-btn redo" bindtap="onRedoPractice">重做</view>
+        <view class="card-btn submit" bindtap="onSubmitTap">提交</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 进度恢复弹窗 -->
+  <view class="resume-modal" wx:if="{{showResumeModal}}">
+    <view class="resume-mask"></view>
+    <view class="resume-content">
+      <view class="resume-title">继续刷题</view>
+      <view class="resume-info">
+        <view class="resume-item">
+          <text class="resume-label">上次进度</text>
+          <text class="resume-value">第 {{savedProgress.currentIndex + 1}} / {{savedProgress.totalCount}} 题</text>
+        </view>
+        <view class="resume-item">
+          <text class="resume-label">已答题</text>
+          <text class="resume-value">{{savedProgress.answerRecords.length}} 题</text>
+        </view>
+        <view class="resume-item">
+          <text class="resume-label">正确率</text>
+          <text class="resume-value">{{resumeAccuracy}}%</text>
+        </view>
+        <view class="resume-item">
+          <text class="resume-label">用时</text>
+          <text class="resume-value">{{resumeDuration}}</text>
+        </view>
+      </view>
+      <view class="resume-actions">
+        <view class="resume-btn cancel" bindtap="restartPractice">重新开始</view>
+        <view class="resume-btn confirm" bindtap="resumeProgress">继续刷题</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 上报弹窗 -->
+  <view class="report-modal" wx:if="{{showReportModal}}">
+    <view class="report-mask" bindtap="hideReportModal"></view>
+    <view class="report-content">
+      <view class="report-title">错题反馈</view>
+      <view class="report-desc">
+        <text>一直在完善，从未停歇过，但是有些题目可能仍然存在瑕疵，对您造成的不便我们深表歉意！
+为方便我们排查错误，请您详细描述错误，例如：</text>
+      </view>
+      <view class="report-options">
+        <view class="report-option {{reportTypeClasses['1']}}" bindtap="toggleReportType" data-type="1">
+          <view class="checkbox {{reportTypeClasses['1'] ? 'checked' : ''}}"></view>
+          <text>含有错别字</text>
+        </view>
+        <view class="report-option {{reportTypeClasses['2']}}" bindtap="toggleReportType" data-type="2">
+          <view class="checkbox {{reportTypeClasses['2'] ? 'checked' : ''}}"></view>
+          <text>答案不正确</text>
+        </view>
+        <view class="report-option {{reportTypeClasses['3']}}" bindtap="toggleReportType" data-type="3">
+          <view class="checkbox {{reportTypeClasses['3'] ? 'checked' : ''}}"></view>
+          <text>题目不完整</text>
+        </view>
+        <view class="report-option {{reportTypeClasses['4']}}" bindtap="toggleReportType" data-type="4">
+          <view class="checkbox {{reportTypeClasses['4'] ? 'checked' : ''}}"></view>
+          <text>图片不显示</text>
+        </view>
+        <view class="report-option {{reportTypeClasses['5']}}" bindtap="toggleReportType" data-type="5">
+          <view class="checkbox {{reportTypeClasses['5'] ? 'checked' : ''}}"></view>
+          <text>解析不完整</text>
+        </view>
+        <view class="report-option {{reportTypeClasses['6']}}" bindtap="toggleReportType" data-type="6">
+          <view class="checkbox {{reportTypeClasses['6'] ? 'checked' : ''}}"></view>
+          <text>音/视频没法播</text>
+        </view>
+      </view>
+      <textarea class="report-textarea" placeholder="其他错误，请详细描述您遇到的问题..." value="{{reportContent}}" bindinput="onReportInput"/>
+      <view class="report-actions">
+        <view class="report-btn cancel" bindtap="hideReportModal">取消</view>
+        <view class="report-btn submit" bindtap="submitReport">提交</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="practice-footer">
+    <view class="footer-left">
+      <view class="nav-btn {{currentIndex === 0 ? 'disabled' : ''}}" bindtap="onPrevTap">上一题</view>
+    </view>
+    <view class="footer-center">
+      <view class="footer-action question-nav" bindtap="onQuestionNav">
+        <view class="footer-action-icon">
+          <text class="footer-action-symbol">▦</text>
+        </view>
+        <text>答题卡</text>
+      </view>
+      <view class="footer-action favorite-btn {{isFavorite ? 'active' : ''}}" bindtap="onFavoriteTap">
+        <view class="footer-action-icon">
+          <text class="footer-action-symbol">{{isFavorite ? '★' : '☆'}}</text>
+        </view>
+        <text>{{isFavorite ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="footer-action remove-wrong-btn" wx:if="{{wrongMode}}" bindtap="onRemoveWrongTap">
+        <view class="footer-action-icon">
+          <text class="footer-action-symbol">×</text>
+        </view>
+        <text>移除</text>
+      </view>
+    </view>
+    <view class="footer-right">
+      <view class="nav-btn" bindtap="onNextTap" wx:if="{{currentIndex < totalCount - 1}}">下一题</view>
+      <view class="nav-btn submit" bindtap="onSubmitTap" wx:else>交卷</view>
+    </view>
+  </view>
+</view>

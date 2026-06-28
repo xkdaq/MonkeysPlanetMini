@@ -1,0 +1,48 @@
+<view class="pan-list-page">
+  <!-- 搜索框 -->
+  <view class="search-box">
+    <view class="search-icon-wrap">
+      <image class="search-icon-img" src="/images/search.png" mode="aspectFit" />
+    </view>
+    <input class="search-input" placeholder="{{placeholder}}" bindinput="onInputChange" value="{{keywords}}" />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+    <view wx:if="{{keywords}}" class="clear-btn" bindtap="onClearSearch">清除</view>
+  </view>
+
+  <!-- 单列横向卡片列表 -->
+  <view class="content-list">
+    <block wx:for="{{list}}" wx:key="id">
+      <view class="content-card" bindtap="onItemTap" data-item="{{item}}">
+        <!-- 封面图 -->
+        <image wx:if="{{item.coverImage}}" class="content-cover" src="{{item.coverImage}}" mode="aspectFill" />
+        <!-- 内容区 -->
+        <view class="content-main">
+          <view class="content-title-row">
+            <view wx:if="{{item.isTop == 1}}" class="top-tag">置顶</view>
+            <text class="content-title">{{item.title}}</text>
+          </view>
+          <view class="tag-row">
+            <view wx:if="{{item.accessType == 2}}" class="access-tag ad">看广告</view>
+            <view wx:else class="access-tag free">免费</view>
+            <block wx:for="{{item.categoryList}}" wx:key="index" wx:for-item="tag">
+              <view class="category-tag tag-{{index % 5}}">{{tag}}</view>
+            </block>
+          </view>
+          <view class="link-summary">
+            <text wx:if="{{item.baiduUrl}}" class="pan-hint">百度网盘</text>
+            <text wx:if="{{item.quarkUrl}}" class="pan-hint">夸克网盘</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loadingMore}}" class="loading">加载中...</view>
+  <view wx:if="{{!hasMore && list.length > 0}}" class="no-more">没有更多了</view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!isLoading && list.length === 0}}" class="empty-box">
+    <text class="empty-text">暂无网盘资源</text>
+  </view>
+</view>

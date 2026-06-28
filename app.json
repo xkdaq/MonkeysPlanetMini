@@ -1,0 +1,65 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/wangpan/wangpan",
+    "pages/exam/exam",
+    "pages/profile/profile",
+    "pages/practice/practice",
+    "pages/wrong/wrong",
+    "pages/favorite/favorite",
+    "pages/result/result",
+    "pages/detail/detail",
+    "pages/article-list/article-list",
+    "pages/pan-list/pan-list",
+    "pages/search/search",
+    "pages/webview/webview",
+    "pages/setting/setting",
+    "pages/feedback/feedback",
+    "pages/profile/edit",
+    "pages/profile/about",
+    "pages/profile/records",
+    "pages/profile/bind-phone",
+    "pages/profile/change-password"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "猴哥星球",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home_selected.png"
+      },
+      {
+        "pagePath": "pages/wangpan/wangpan",
+        "text": "资料",
+        "iconPath": "images/wangpan.png",
+        "selectedIconPath": "images/wangpan_selected.png"
+      },
+      {
+        "pagePath": "pages/exam/exam",
+        "text": "题库",
+        "iconPath": "images/exam.png",
+        "selectedIconPath": "images/exam-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/mine.png",
+        "selectedIconPath": "images/mine_selected.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

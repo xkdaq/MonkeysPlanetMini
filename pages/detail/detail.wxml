@@ -1,0 +1,68 @@
+<view class="detail-page">
+  <!-- 顶部标题区 -->
+  <view class="detail-hero">
+    <view class="detail-title {{type === 'material' && categoryList.length > 0 ? 'with-tags' : ''}}">{{title}}</view>
+    <view wx:if="{{type === 'material' && categoryList.length > 0}}" class="detail-tags">
+      <view wx:for="{{categoryList}}" wx:key="*this" class="detail-tag tag-{{index % 5}}">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 内容卡片 -->
+  <view class="content-card">
+    <mp-html content="{{htmlContent}}" selectable="true" bindlinktap="onLinkTap"/>
+  </view>
+
+  <!-- 网盘操作区 -->
+  <block wx:if="{{type === 'material'}}">
+    <!-- 有网盘链接 -->
+    <view wx:if="{{baiduUrl || quarkUrl}}" class="action-section">
+      <view class="section-label">
+        <view class="label-line"></view>
+        <text>网盘链接</text>
+      </view>
+      <view class="action-list">
+        <view wx:if="{{baiduUrl}}" class="action-item" bindtap="onPanTap" data-url="{{baiduUrl}}" data-code="{{baiduCode}}">
+          <view class="action-icon baidu">度</view>
+          <view class="action-body">
+            <text class="action-name">百度网盘</text>
+            <text wx:if="{{baiduCode}}" class="action-meta">提取码 {{baiduCode}}</text>
+            <text wx:else class="action-meta">点击打开链接</text>
+          </view>
+          <view class="action-btn">
+            <text>打开</text>
+          </view>
+        </view>
+        <view wx:if="{{quarkUrl}}" class="action-item" bindtap="onPanTap" data-url="{{quarkUrl}}" data-code="{{quarkCode}}">
+          <view class="action-icon quark">夸</view>
+          <view class="action-body">
+            <text class="action-name">夸克网盘</text>
+            <text wx:if="{{quarkCode}}" class="action-meta">提取码 {{quarkCode}}</text>
+            <text wx:else class="action-meta">点击打开链接</text>
+          </view>
+          <view class="action-btn">
+            <text>打开</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 无网盘链接 -->
+    <view wx:if="{{!baiduUrl && !quarkUrl}}" class="action-section">
+      <view class="section-label">
+        <view class="label-line"></view>
+        <text>网盘链接</text>
+      </view>
+      <view class="empty-card">
+        <text class="empty-text">暂未配置网盘链接</text>
+      </view>
+    </view>
+
+    <!-- 备注 -->
+    <view wx:if="{{linkRemark}}" class="remark-section">
+      <view class="remark-card">
+        <view class="remark-dot"></view>
+        <text class="remark-text">{{linkRemark}}</text>
+      </view>
+    </view>
+  </block>
+</view>

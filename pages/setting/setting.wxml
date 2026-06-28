@@ -1,0 +1,28 @@
+<view class="settings-container">
+  <!-- Logo区域 -->
+  <view class="logo-section">
+    <view class="logo-wrap" bindtap="onLogoTap">
+      <image class="logo" src="/images/logo.png" mode="aspectFit"/>
+    </view>
+    <text class="app-name">猴哥星球</text>
+    <!-- <text class="app-slogan">双击Logo有惊喜</text> -->
+  </view>
+
+  <!-- 版本信息卡片 -->
+  <view class="info-card">
+    <view class="info-item">
+      <text class="info-label">版本号</text>
+      <text class="info-value">{{versionCode}}</text>
+    </view>
+    <view class="info-divider"></view>
+    <view class="info-item">
+      <text class="info-label">版本名</text>
+      <text class="info-value">{{version}}</text>
+    </view>
+  </view>
+
+  <!-- 版权信息 -->
+  <view class="footer">
+    <text class="copyright">© 2026 猴哥星球 版权所有</text>
+  </view>
+</view>

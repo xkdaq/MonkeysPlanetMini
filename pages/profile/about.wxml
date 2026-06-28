@@ -1,0 +1,31 @@
+<!--pages/profile/about.wxml-->
+<view class="about-container">
+  <!-- Logo -->
+  <view class="logo-section">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"/>
+    <text class="app-name">{{appName}}</text>
+    <text class="version">版本 {{version}}</text>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="menu-list">
+    <view class="menu-item" bindtap="onContact">
+      <text class="menu-text">联系我们</text>
+      <image class="menu-arrow" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+    <view class="menu-item" bindtap="onUserAgreement">
+      <text class="menu-text">用户协议</text>
+      <image class="menu-arrow" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+    <view class="menu-item" bindtap="onPrivacyPolicy">
+      <text class="menu-text">隐私政策</text>
+      <image class="menu-arrow" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+    </view>
+  </view>
+
+  <!-- 版权信息 -->
+  <view class="footer">
+    <text class="copyright">© 2026 猴哥星球 All Rights Reserved</text>
+    <text class="powered">基于 RuoYi 框架开发</text>
+  </view>
+</view>

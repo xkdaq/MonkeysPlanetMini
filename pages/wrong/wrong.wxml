@@ -1,0 +1,94 @@
+<!--pages/wrong/wrong.wxml-->
+<view class="container">
+  <!-- 头部操作栏 -->
+  <view class="header-bar">
+    <view class="header-left">
+      <text class="total-text" wx:if="{{grouped}}">共 {{categories.length}} 个章节</text>
+      <text class="total-text" wx:else>共 {{wrongs.length}} 道错题</text>
+    </view>
+  </view>
+
+  <!-- 按分类分组的错题列表 -->
+  <view class="category-list" wx:if="{{grouped && categories.length > 0}}">
+    <view class="category-item" wx:for="{{categories}}" wx:for-index="catIndex" wx:key="categoryId">
+      <!-- 分类标题 -->
+      <view class="category-header" bindtap="toggleCategory" data-index="{{catIndex}}">
+        <view class="category-info">
+          <text class="category-name">{{item.categoryName}}</text>
+          <text class="category-count">{{item.count}} 道错题</text>
+        </view>
+        <view class="category-actions">
+          <text class="practice-category-btn" catchtap="startCategoryPractice" data-index="{{catIndex}}">练习</text>
+          <text class="expand-icon {{expandedCategories.includes(catIndex) ? 'expanded' : ''}}">▼</text>
+        </view>
+      </view>
+      
+      <!-- 分类下的错题列表 -->
+      <view class="category-wrongs" wx:if="{{expandedCategories.includes(catIndex)}}">
+        <view 
+          class="wrong-item"
+          wx:for="{{item.wrongs}}"
+          wx:for-item="wrong"
+          wx:for-index="wrongIndex"
+          wx:key="id"
+          bindtap="onWrongTap"
+          data-id="{{wrong.id}}"
+          data-category-index="{{catIndex}}"
+          data-wrong-index="{{wrongIndex}}"
+        >
+          <!-- 错题内容 -->
+          <view class="wrong-content">
+            <view class="question-text">{{wrong.question.content}}</view>
+            <view class="wrong-info">
+              <text class="wrong-count">错 {{wrong.wrongCount}} 次</text>
+              <text class="wrong-time">{{wrong.lastWrongTime}}</text>
+            </view>
+            <view class="your-answer">
+              <text class="label">你的答案：</text>
+              <text class="value wrong">{{wrong.userAnswer || '未作答'}}</text>
+            </view>
+            <view class="correct-answer">
+              <text class="label">正确答案：</text>
+              <text class="value correct">{{wrong.question.answer}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 平铺错题列表（兼容旧格式） -->
+  <view class="wrong-list" wx:if="{{!grouped && wrongs.length > 0}}">
+    <view 
+      class="wrong-item"
+      wx:for="{{wrongs}}"
+      wx:key="id"
+      bindtap="onWrongTap"
+      data-id="{{item.id}}"
+      data-index="{{index}}"
+    >
+      <!-- 错题内容 -->
+      <view class="wrong-content">
+        <view class="question-text">{{item.question.content}}</view>
+        <view class="wrong-info">
+          <text class="wrong-count">错 {{item.wrongCount}} 次</text>
+          <text class="wrong-time">{{item.lastWrongTime}}</text>
+        </view>
+        <view class="your-answer">
+          <text class="label">你的答案：</text>
+          <text class="value wrong">{{item.userAnswer || '未作答'}}</text>
+        </view>
+        <view class="correct-answer">
+          <text class="label">正确答案：</text>
+          <text class="value correct">{{item.question.answer}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{(grouped && categories.length === 0) || (!grouped && wrongs.length === 0)}}">
+    <text>暂无错题记录</text>
+    <text class="sub-text">答错的题目会出现在这里</text>
+  </view>
+</view>

@@ -1,0 +1,102 @@
+<view class="index-page">
+  <!-- 隐私授权弹窗 -->
+  <privacy-modal show="{{showPrivacyModal}}" bind:agree="onPrivacyAgree" bind:disagree="onPrivacyDisagree" />
+
+  <!-- 搜索框 -->
+  <view class="search-box" bindtap="goToSearch">
+    <view class="search-icon-wrap">
+      <image class="search-icon-img" src="/images/search.png" mode="aspectFit" />
+    </view>
+    <input class="search-input" placeholder="请输入关键词搜索" disabled="true"/>
+  </view>
+
+  <!-- 轮播图 -->
+  <view wx:if="{{bannerList.length > 0}}" class="banner-section">
+    <swiper class="banner-swiper" indicator-dots autoplay circular indicator-active-color="#07c160">
+      <block wx:for="{{bannerList}}" wx:key="id">
+        <swiper-item>
+          <image class="banner-image" src="{{item.imageUrl}}" mode="aspectFill" catchtap="onBannerTap" data-item="{{item}}" />
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
+  <!-- 公告区域 -->
+  <view wx:if="{{noticeList.length > 0}}" class="notice-section" bindtap="onNoticeTap" data-item="{{noticeList[noticeCurrent]}}">
+    <image class="notice-icon-img" src="/images/notice.png" mode="aspectFit" />
+    <view class="notice-content">
+      <swiper class="notice-swiper" vertical autoplay circular interval="3000" display-multiple-items="1">
+        <block wx:for="{{noticeList}}" wx:key="id">
+          <swiper-item>
+            <text class="notice-text">{{item.title}}</text>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+  </view>
+
+  <!-- 文章列表 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title-wrap">
+        <view class="section-title-line"></view>
+        <text class="section-title">最新公告</text>
+      </view>
+      <view class="section-more" bindtap="goToArticleList">
+        <text>查看更多</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+    <view class="list">
+      <block wx:for="{{articleList}}" wx:key="id">
+        <view class="list-item" bindtap="onArticleItemTap" data-item="{{item}}">
+          <view class="title-box">
+            <view wx:if="{{item.isTop == 1}}" class="top-tag">置顶</view>
+            <text class="title">{{item.title}}</text>
+          </view>
+          <view class="info-row">
+            <text class="date">{{item.date}}</text>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{articleList.length === 0}}" class="empty-box">
+        <text class="empty-text">暂无文章</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 网盘列表 -->
+  <view wx:if="{{panArticleList.length > 0}}" class="section">
+    <view class="section-header">
+      <view class="section-title-wrap">
+        <view class="section-title-line"></view>
+        <text class="section-title">网盘资源</text>
+      </view>
+      <view class="section-more" bindtap="goToPanList">
+        <text>查看更多</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+    <view class="list">
+      <block wx:for="{{panArticleList}}" wx:key="id">
+        <view class="list-item" bindtap="onPanItemTap" data-item="{{item}}">
+          <view class="title-box">
+            <view wx:if="{{item.isTop == 1}}" class="top-tag">置顶</view>
+            <text class="title">{{item.title}}</text>
+          </view>
+          <view class="info-row">
+            <!-- 分类标签 -->
+            <view class="category-tags">
+              <block wx:for="{{item.categoryList}}" wx:key="index" wx:for-item="tag">
+                <view class="tag tag-{{index % 5}}">{{tag}}</view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{panArticleList.length === 0}}" class="empty-box">
+        <text class="empty-text">暂无网盘资源</text>
+      </view>
+    </view>
+  </view>
+</view>

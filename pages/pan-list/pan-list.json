@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "网盘资源",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "onReachBottomDistance": 50
+}

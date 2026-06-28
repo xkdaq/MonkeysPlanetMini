@@ -1,0 +1,68 @@
+<view class="wangpan-page">
+  <!-- 搜索框 -->
+  <view class="search-box" bindtap="goToSearch">
+    <view class="search-icon-wrap">
+      <image class="search-icon-img" src="/images/search.png" mode="aspectFit" />
+    </view>
+    <input class="search-input" placeholder="搜索资料标题或分类" disabled="true" />
+  </view>
+
+  <!-- 科目标签栏 -->
+  <scroll-view class="category-bar subject-bar" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="category-list">
+      <view class="category-item {{activeSubjectId === '' ? 'active' : ''}}"
+            bindtap="onSubjectTap" data-id="">全部</view>
+      <view wx:for="{{subjects}}" wx:key="id"
+            class="category-item {{activeSubjectId == item.id ? 'active' : ''}}"
+            bindtap="onSubjectTap" data-id="{{item.id}}">{{item.name}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 分类标签栏 -->
+  <scroll-view wx:if="{{categories.length > 0}}" class="category-bar subcategory-bar" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="category-list category-list-secondary">
+      <view class="category-item secondary {{activeCategoryId === '' ? 'active' : ''}}"
+            bindtap="onCategoryTap" data-id="">全部分类</view>
+      <view wx:for="{{categories}}" wx:key="id"
+            class="category-item secondary {{activeCategoryId == item.id ? 'active' : ''}}"
+            bindtap="onCategoryTap" data-id="{{item.id}}">{{item.name}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 单列横向卡片列表 -->
+  <view class="content-list">
+    <block wx:for="{{list}}" wx:key="id">
+      <view class="content-card" bindtap="onItemTap" data-item="{{item}}">
+        <!-- 封面图 -->
+        <image wx:if="{{item.coverImage}}" class="content-cover" src="{{item.coverImage}}" mode="aspectFill" />
+        <!-- 内容区 -->
+        <view class="content-main">
+          <view class="content-title-row">
+            <view wx:if="{{item.isTop == 1}}" class="top-tag">置顶</view>
+            <text class="content-title">{{item.title}}</text>
+          </view>
+          <view class="tag-row">
+            <view wx:if="{{item.accessType == 2}}" class="access-tag ad">看广告</view>
+            <view wx:else class="access-tag free">免费</view>
+            <block wx:for="{{item.categoryList}}" wx:key="index" wx:for-item="tag">
+              <view class="category-tag tag-{{index % 5}}">{{tag}}</view>
+            </block>
+          </view>
+          <view class="link-summary">
+            <text wx:if="{{item.baiduUrl}}" class="pan-hint">百度网盘</text>
+            <text wx:if="{{item.quarkUrl}}" class="pan-hint">夸克网盘</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loadingMore}}" class="loading">加载中...</view>
+  <view wx:if="{{!hasMore && list.length > 0}}" class="no-more">没有更多了</view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!isLoading && list.length === 0}}" class="empty-box">
+    <text class="empty-text">暂无资料</text>
+  </view>
+</view>
