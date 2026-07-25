@@ -23,23 +23,23 @@
         <text class="stat-label">答错</text>
       </view>
       <view class="stat-item">
-        <text class="stat-value">{{total}}</text>
-        <text class="stat-label">总题数</text>
+        <text class="stat-value">{{answered}}</text>
+        <text class="stat-label">已答题</text>
       </view>
       <view class="stat-item">
-        <text class="stat-value">{{formatTime(duration)}}</text>
+        <text class="stat-value">{{durationText}}</text>
         <text class="stat-label">用时</text>
       </view>
     </view>
 
     <!-- 评价 -->
-    <view class="evaluation">{{getEvaluation()}}</view>
+    <view class="evaluation">{{evaluation}}</view>
   </view>
 
   <!-- 操作按钮 -->
   <view class="action-buttons">
     <button class="btn btn-default" bindtap="onBackHome">返回首页</button>
-    <button class="btn btn-primary" bindtap="onRetry" wx:if="{{wrong > 0}}">查看错题</button>
+    <button class="btn btn-primary" bindtap="onViewWrongs" wx:if="{{wrong > 0}}">查看错题</button>
     <button class="btn btn-primary" bindtap="onRetry">再来一次</button>
   </view>
 </view>

@@ -132,36 +132,34 @@ Page({
     if (this.data.timer) {
       clearInterval(this.data.timer)
     }
-    
-    // 错题/收藏模式不保存记录和进度
+
+    // 错题/收藏模式不保存进度
+    // 正常模式只保存本地进度；练习记录统一在交卷/完成时上报，
+    // 避免「中途退出自动上报 + 恢复进度后再次上报」产生重复记录
     if (!this.data.wrongMode && !this.data.favoriteMode) {
-      // 保存进度
       this.saveProgress()
-      
-      // 如果有答题记录，自动保存刷题记录
-      if (this.data.answerRecords.length > 0) {
-        this.autoSaveRecord()
-      }
     }
   },
 
-  // 自动保存刷题记录（退出页面时调用）
-  async autoSaveRecord() {
-    const { bankId, categoryId, practiceType, answerRecords, correctCount, duration } = this.data
-    
-    try {
-      await api.practice.saveRecord({
-        bankId,
-        categoryId,
-        practiceType,
-        totalCount: answerRecords.length,
-        correctCount,
-        duration,
-        answers: answerRecords
-      })
-      console.log('刷题记录已自动保存')
-    } catch (error) {
-      console.error('自动保存记录失败:', error)
+  // 页面隐藏（切后台/跳转其他页面）：暂停计时，记录离开时间
+  onHide() {
+    this._hiddenAt = Date.now()
+    this._timerWasRunning = !!this.data.timer
+    if (this.data.timer) {
+      clearInterval(this.data.timer)
+      this.setData({ timer: null })
+    }
+  },
+
+  // 页面重新显示：把 startTime 顺延离开时长，使 duration 不含切后台时间
+  onShow() {
+    if (this._hiddenAt && this.data.startTime) {
+      this.setData({ startTime: this.data.startTime + (Date.now() - this._hiddenAt) })
+      this._hiddenAt = null
+    }
+    if (this._timerWasRunning && !this.data.timer) {
+      this.startTimer()
+      this._timerWasRunning = false
     }
   },
 
@@ -174,10 +172,11 @@ Page({
   // 保存刷题进度
   saveProgress() {
     const { bankId, categoryId, practiceType, questions, currentIndex, answerRecords, correctCount, wrongCount, practiceMode, duration } = this.data
-    
-    // 如果没有题目或已完成所有题目，清除进度
-    if (questions.length === 0 || currentIndex >= questions.length - 1) {
-      wx.removeStorageSync(this.getProgressKey())
+    const progressKey = this.getProgressKey()
+
+    // 已交卷（记录已上报）或无题目时，清除进度；其他情况一律保留进度以便恢复
+    if (this._recordSaved || questions.length === 0) {
+      wx.removeStorageSync(progressKey)
       return
     }
     
@@ -438,7 +437,8 @@ Page({
 
   // 选择答案
   onOptionSelect(e) {
-    if (this.data.isAnswered) return
+    // 已作答或提交中，禁止重复操作（接口未返回前 isAnswered 仍为 false，需加锁）
+    if (this.data.isAnswered || this._submitting) return
     
     const { label } = e.currentTarget.dataset
     const question = this.data.currentQuestion
@@ -482,6 +482,7 @@ Page({
 
   // 提交答案（多选题使用）
   onSubmitAnswer() {
+    if (this._submitting) return
     if (!this.data.userAnswer) {
       wx.showToast({ title: '请选择答案', icon: 'none' })
       return
@@ -491,39 +492,40 @@ Page({
 
   // 提交答案
   async submitAnswer() {
-    if (this.data.isAnswered) return
-    
+    if (this.data.isAnswered || this._submitting) return
+    this._submitting = true
+
     const { currentQuestion, userAnswer, wrongMode, favoriteMode } = this.data
-    
-    // 错题模式或收藏模式下，本地判断答案，不提交到服务器
-    if (wrongMode || favoriteMode) {
-      this.checkAnswerLocal(currentQuestion, userAnswer)
-      return
-    }
-    
+
     try {
+      // 错题模式或收藏模式下，本地判断答案，不提交到服务器
+      if (wrongMode || favoriteMode) {
+        this.checkAnswerLocal(currentQuestion, userAnswer)
+        return
+      }
+
       const res = await api.practice.submit({
         questionId: currentQuestion.id,
         userAnswer
       })
-      
+
       const { isCorrect, correctAnswer, analysis } = res.data
-      
+
       // 记录答题
       const record = {
         questionId: currentQuestion.id,
         userAnswer,
         isCorrect
       }
-      
+
       const answerRecords = [...this.data.answerRecords, record]
-      
+
       // 计算选项样式类
       const optionClasses = this.computeOptionClasses(isCorrect, userAnswer, correctAnswer)
-      
+
       // 更新答题卡样式
       const cardItemClasses = this.computeCardItemClasses(answerRecords)
-      
+
       this.setData({
         isAnswered: true,
         isCorrect,
@@ -534,15 +536,17 @@ Page({
         optionClasses,
         cardItemClasses
       })
-      
+
       // 更新题目数据（显示正确答案和解析）
       const questions = this.data.questions
       questions[this.data.currentIndex].correctAnswer = correctAnswer
       questions[this.data.currentIndex].analysis = analysis
       this.setData({ questions })
-      
+
     } catch (error) {
       console.error('提交答案失败:', error)
+    } finally {
+      this._submitting = false
     }
   },
 
@@ -652,7 +656,9 @@ Page({
             currentIndex: 0,
             answerRecords: [],
             correctCount: 0,
-            wrongCount: 0
+            wrongCount: 0,
+            duration: 0,
+            startTime: Date.now()
           })
           this.loadQuestion(0)
           this.hideCardModal()
@@ -839,12 +845,14 @@ Page({
 
   // 显示完成弹窗
   showCompleteDialog() {
-    const { correctCount, wrongCount, totalCount, duration } = this.data
-    const accuracy = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0
-    
+    const { correctCount, totalCount, answerRecords } = this.data
+    const answered = answerRecords.length
+    // 正确率按已答题数计算，与上报口径（totalCount=已答数）保持一致
+    const accuracy = answered > 0 ? Math.round((correctCount / answered) * 100) : 0
+
     wx.showModal({
       title: '练习完成',
-      content: `共${totalCount}题，答对${correctCount}题，正确率${accuracy}%`,
+      content: `共${totalCount}题，已答${answered}题，答对${correctCount}题，正确率${accuracy}%`,
       confirmText: '查看结果',
       cancelText: '继续练习',
       success: (res) => {
@@ -857,33 +865,46 @@ Page({
 
   // 保存记录并跳转结果页
   async saveRecordAndNavigate() {
-    const { bankId, categoryId, practiceType, answerRecords, correctCount, duration, wrongMode, favoriteMode } = this.data
-    
+    // 防止重复点击导致重复上报
+    if (this._savingRecord) return
+
+    const { bankId, categoryId, practiceType, questionType, answerRecords, correctCount, duration, wrongMode, favoriteMode } = this.data
+    const answered = answerRecords.length
+
     // 错题模式或收藏模式下，直接跳转结果页，不保存记录
     if (wrongMode || favoriteMode) {
+      const mode = wrongMode ? 'wrong' : 'favorite'
       wx.redirectTo({
-        url: `/pages/result/result?correct=${correctCount}&wrong=${this.data.wrongCount}&total=${this.data.totalCount}&duration=${duration}`
+        url: `/pages/result/result?correct=${correctCount}&wrong=${this.data.wrongCount}&total=${this.data.totalCount}&duration=${duration}&answered=${answered}&bankId=${bankId || ''}&mode=${mode}`
       })
       return
     }
-    
+
+    this._savingRecord = true
     try {
       await api.practice.saveRecord({
         bankId,
         categoryId,
         practiceType,
-        totalCount: answerRecords.length,
+        totalCount: answered,
         correctCount,
         duration,
         answers: answerRecords
       })
-      
-      // 跳转到结果页
-      wx.redirectTo({
-        url: `/pages/result/result?correct=${correctCount}&wrong=${this.data.wrongCount}&total=${this.data.totalCount}&duration=${duration}`
-      })
+
+      // 标记记录已上报，onUnload 保存进度时会据此清除进度，避免重复统计
+      this._recordSaved = true
+
+      // 跳转到结果页（携带「再来一次」所需的练习参数）
+      let url = `/pages/result/result?correct=${correctCount}&wrong=${this.data.wrongCount}&total=${this.data.totalCount}&duration=${duration}&answered=${answered}&bankId=${bankId || ''}&practiceType=${practiceType}&title=${encodeURIComponent(this.data.title)}`
+      if (categoryId) url += `&categoryId=${categoryId}`
+      if (questionType) url += `&questionType=${questionType}`
+      wx.redirectTo({ url })
     } catch (error) {
       console.error('保存记录失败:', error)
+      wx.showToast({ title: '记录保存失败，请重试', icon: 'none' })
+    } finally {
+      this._savingRecord = false
     }
   },
 
