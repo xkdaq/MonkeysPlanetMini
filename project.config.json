@@ -13,6 +13,14 @@
       {
         "value": "package-lock.json",
         "type": "file"
+      },
+      {
+        "value": ".DS_Store",
+        "type": "file"
+      },
+      {
+        "value": "miniprogram_npm/crypto-js/index.js.map",
+        "type": "file"
       }
     ],
     "include": []

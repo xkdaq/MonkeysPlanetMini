@@ -1,5 +1,5 @@
 const { MAX_VIEWS_PER_DAY } = require('../../utils/viewLimit.js')
-const { API_VERSION } = require('../../utils/article-api.js')
+const { API_VERSION } = require('../../utils/config.js')
 
 let logoClickCount = 0
 let logoClickTimer = null

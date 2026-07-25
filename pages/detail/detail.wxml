@@ -21,7 +21,7 @@
         <text>网盘链接</text>
       </view>
       <view class="action-list">
-        <view wx:if="{{baiduUrl}}" class="action-item" bindtap="onPanTap" data-url="{{baiduUrl}}" data-code="{{baiduCode}}">
+        <view wx:if="{{baiduUrl}}" class="action-item" bindtap="onPanTap" data-pan="baidu" data-url="{{baiduUrl}}" data-code="{{baiduCode}}">
           <view class="action-icon baidu">度</view>
           <view class="action-body">
             <text class="action-name">百度网盘</text>
@@ -32,7 +32,7 @@
             <text>打开</text>
           </view>
         </view>
-        <view wx:if="{{quarkUrl}}" class="action-item" bindtap="onPanTap" data-url="{{quarkUrl}}" data-code="{{quarkCode}}">
+        <view wx:if="{{quarkUrl}}" class="action-item" bindtap="onPanTap" data-pan="quark" data-url="{{quarkUrl}}" data-code="{{quarkCode}}">
           <view class="action-icon quark">夸</view>
           <view class="action-body">
             <text class="action-name">夸克网盘</text>

@@ -3,10 +3,7 @@
  */
 const CryptoJS = require('../miniprogram_npm/crypto-js/index.js')
 
-const { BASE_URL, AES_KEY, AES_IV_ARTICLE } = require('./config.js')
-
-// 小程序的版本号
-const API_VERSION = '10'
+const { BASE_URL, AES_KEY, AES_IV_ARTICLE, API_VERSION } = require('./config.js')
 
 // AES 解密函数
 function aesDecrypt(encryptedBase64) {
@@ -193,7 +190,6 @@ function getHomeIndexData(bannerLimit = 3, noticeLimit = 3, articleLimit = 5, pa
 }
 
 module.exports = {
-  API_VERSION,
   getListData,
   getArticleDetail,
   getSearchList,

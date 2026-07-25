@@ -5,6 +5,9 @@
 // 后端API基础地址
 const BASE_URL = 'https://api.monkeysxu.top'
 
+// 小程序版本号（作为 x-version 请求头，用于后端审核模式判断等版本控制）
+const API_VERSION = '10'
+
 // AES密钥（所有接口通用）
 const AES_KEY = ''
 
@@ -19,6 +22,7 @@ const SIGN_KEY = ''
 
 module.exports = {
   BASE_URL,
+  API_VERSION,
   AES_KEY,
   AES_IV,
   AES_IV_ARTICLE,

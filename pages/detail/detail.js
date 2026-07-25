@@ -1,11 +1,14 @@
 const { getArticleDetail } = require('../../utils/article-api.js')
 const { getMaterialDetail } = require('../../utils/material-api.js')
+const { reportVisit } = require('../../utils/visit.js')
 
 Page({
   data: {
     title: '',
     htmlContent: '',
     type: 0,
+    // 当前资料/文章ID（用于统计上报）
+    materialId: null,
     // 资料详情专用字段
     categoryList: [],
     baiduUrl: '',
@@ -25,6 +28,9 @@ Page({
       wx.showToast({ title: '参数错误', icon: 'none' })
       return
     }
+
+    // 后端 materialId 为 Long，统一转数字
+    this.setData({ materialId: parseInt(id) || null })
 
     try {
       let res
@@ -50,6 +56,13 @@ Page({
       }
 
       this.setData(data)
+
+      // 上报详情查看：资料报 detail_view，文章报 note_detail_view（与后台统计口径一致）
+      reportVisit({
+        eventType: type === 'material' ? 'detail_view' : 'note_detail_view',
+        materialId: this.data.materialId,
+        materialTitle: res.title
+      })
     } catch (e) {
       console.error('加载失败:', e)
       wx.showToast({ title: '加载失败', icon: 'none' })
@@ -69,7 +82,16 @@ Page({
 
   // 网盘卡片点击
   onPanTap(e) {
-    const { url, code } = e.currentTarget.dataset
+    const { url, code, pan } = e.currentTarget.dataset
+
+    // 上报网盘链接点击（baidu_click / quark_click）
+    if (pan === 'baidu' || pan === 'quark') {
+      reportVisit({
+        eventType: `${pan}_click`,
+        materialId: this.data.materialId,
+        materialTitle: this.data.title
+      })
+    }
 
     if (code) {
       wx.setClipboardData({

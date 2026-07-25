@@ -1,4 +1,6 @@
 // app.js
+const { reportVisit } = require('./utils/visit.js')
+
 App({
   globalData: {
     userInfo: null,
@@ -10,6 +12,9 @@ App({
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
+
+    // 上报小程序启动访问（PV 统计）
+    reportVisit({ eventType: 'page_view' })
 
     // 从本地存储读取token
     const token = wx.getStorageSync('token')
