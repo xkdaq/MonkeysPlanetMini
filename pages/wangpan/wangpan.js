@@ -1,4 +1,5 @@
 const { getMaterialList, getMaterialSubjects, getMaterialCategories } = require('../../utils/material-api.js')
+const { isAdEnabled, fetchGlobalConfig } = require('../../utils/global-config.js')
 
 // 激励视频广告实例
 let videoAd = null
@@ -20,6 +21,9 @@ Page({
   },
 
   async onLoad() {
+    // 刷新后台总开关（不阻塞页面加载）
+    fetchGlobalConfig()
+
     await this.loadSubjects()
     await this.loadList(true)
 
@@ -152,8 +156,8 @@ Page({
       pendingAccessType: accessType
     })
 
-    // accessType=2 需要看广告
-    if (accessType === 2 && videoAd) {
+    // 后台总开关开启时，accessType=2 需要看广告；开关关闭时全部直接查看
+    if (isAdEnabled() && accessType === 2 && videoAd) {
       wx.showModal({
         title: '提示',
         content: '观看一段广告，即可获得资源',
@@ -168,7 +172,7 @@ Page({
         }
       })
     } else {
-      // accessType=1 免费直接查看
+      // 免费资料或开关关闭时直接查看
       wx.navigateTo({
         url: `/pages/detail/detail?id=${id}&type=material`
       })

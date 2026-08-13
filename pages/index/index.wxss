@@ -153,11 +153,12 @@
 }
 
 .top-tag {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-  color: #fff;
-  font-size: 22rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
+  background: var(--white);
+  border: 1rpx solid var(--primary-color);
+  color: var(--primary-color);
+  font-size: 20rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
   margin-right: 12rpx;
   flex-shrink: 0;
 }

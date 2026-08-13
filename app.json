@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/wangpan/wangpan",
+    "pages/index/index",
     "pages/exam/exam",
     "pages/profile/profile",
     "pages/practice/practice",
@@ -33,12 +33,6 @@
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "images/home.png",
-        "selectedIconPath": "images/home_selected.png"
-      },
       {
         "pagePath": "pages/wangpan/wangpan",
         "text": "资料",

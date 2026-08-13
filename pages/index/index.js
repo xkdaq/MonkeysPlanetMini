@@ -1,5 +1,6 @@
 const { getHomeIndexData } = require('../../utils/article-api.js')
 const { canViewToday, recordView } = require('../../utils/viewLimit.js')
+const { isAdEnabled } = require('../../utils/global-config.js')
 const app = getApp()
 
 // 激励视频广告实例
@@ -200,8 +201,8 @@ Page({
       pendingType: accessType
     })
 
-    // accessType === 2 需要观看广告
-    if (accessType === 2 && videoAd) {
+    // 后台总开关开启时，accessType === 2 需要观看广告；开关关闭时全部直接查看
+    if (isAdEnabled() && accessType === 2 && videoAd) {
       wx.showModal({
         title: '提示',
         content: '观看一段广告，即可获得资源',

@@ -18,12 +18,10 @@
         <!-- 内容区 -->
         <view class="content-main">
           <view class="content-title-row">
-            <view wx:if="{{item.isTop == 1}}" class="top-tag">置顶</view>
             <text class="content-title">{{item.title}}</text>
           </view>
           <view class="tag-row">
-            <view wx:if="{{item.accessType == 2}}" class="access-tag ad">看广告</view>
-            <view wx:else class="access-tag free">免费</view>
+            <view wx:if="{{item.isTop == 1}}" class="top-tag">置顶</view>
             <block wx:for="{{item.categoryList}}" wx:key="index" wx:for-item="tag">
               <view class="category-tag tag-{{index % 5}}">{{tag}}</view>
             </block>

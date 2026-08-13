@@ -1,5 +1,6 @@
 // app.js
 const { reportVisit } = require('./utils/visit.js')
+const { fetchGlobalConfig } = require('./utils/global-config.js')
 
 App({
   globalData: {
@@ -15,6 +16,9 @@ App({
 
     // 上报小程序启动访问（PV 统计）
     reportVisit({ eventType: 'page_view' })
+
+    // 拉取后台全局配置（广告总开关等），失败时静默兜底
+    fetchGlobalConfig()
 
     // 从本地存储读取token
     const token = wx.getStorageSync('token')

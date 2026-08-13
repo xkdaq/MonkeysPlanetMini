@@ -61,10 +61,10 @@ Page({
     return '需要多加练习，不要气馁！'
   },
 
-  // 返回首页
+  // 返回首页（资料页）
   onBackHome() {
     wx.switchTab({
-      url: '/pages/index/index'
+      url: '/pages/wangpan/wangpan'
     })
   },
 

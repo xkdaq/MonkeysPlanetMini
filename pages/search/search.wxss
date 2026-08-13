@@ -85,14 +85,13 @@
 }
 
 .top-tag {
-  background: #ff6b6b;
-  color: var(--white);
-  font-size: 22rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-  margin-right: 12rpx;
+  background: var(--white);
+  border: 1rpx solid var(--primary-color);
+  color: var(--primary-color);
+  font-size: 20rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
   flex-shrink: 0;
-  margin-top: 4rpx;
 }
 
 .content-title {
@@ -113,53 +112,19 @@
   margin-bottom: 14rpx;
 }
 
-.access-tag {
-  font-size: 22rpx;
-  padding: 6rpx 14rpx;
-  border-radius: 8rpx;
-}
-
-.access-tag.free {
-  background: var(--primary-light);
-  color: var(--primary-color);
-}
-
-.access-tag.ad {
-  background: #fff2e8;
-  color: #ff7a45;
-}
-
+/* 网站风格描边标签：默认灰色描边，第一个（科目）绿色描边 */
 .category-tag {
-  font-size: 22rpx;
-  padding: 6rpx 14rpx;
-  border-radius: 8rpx;
-  background: #f5f5f5;
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  background: var(--white);
+  border: 1rpx solid #d9d9d9;
   color: var(--text-secondary);
 }
 
 .category-tag.tag-0 {
-  background: #f5f5f5;
-  color: var(--text-secondary);
-}
-
-.category-tag.tag-1 {
-  background: #f5f5f5;
-  color: var(--text-secondary);
-}
-
-.category-tag.tag-2 {
-  background: #f5f5f5;
-  color: var(--text-secondary);
-}
-
-.category-tag.tag-3 {
-  background: #f5f5f5;
-  color: var(--text-secondary);
-}
-
-.category-tag.tag-4 {
-  background: #f5f5f5;
-  color: var(--text-secondary);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .link-summary {

@@ -1,5 +1,6 @@
 const { getSearchList } = require('../../utils/article-api.js')
 const { getMaterialList } = require('../../utils/material-api.js')
+const { isAdEnabled } = require('../../utils/global-config.js')
 
 // 激励视频广告实例
 let videoAd = null
@@ -124,7 +125,7 @@ Page({
         pendingId: id,
         pendingType: 'material'
       })
-      if (accessType === 2 && videoAd) {
+      if (isAdEnabled() && accessType === 2 && videoAd) {
         wx.showModal({
           title: '提示',
           content: '观看一段广告，即可获得资源',
@@ -174,7 +175,7 @@ Page({
         pendingId: id,
         pendingType: type
       })
-      if (type === 5 && videoAd) {
+      if (isAdEnabled() && type === 5 && videoAd) {
         wx.showModal({
           title: '提示',
           content: '观看一段广告，即可获得资源',
