@@ -17,9 +17,10 @@ const { BASE_URL, AES_KEY, AES_IV_ARTICLE, API_VERSION } = require('./config.js'
 
 const STORAGE_KEY = 'global_config'
 
-// 默认配置：不看广告
+// 默认配置：不看广告、非审核模式
 const DEFAULT_CONFIG = {
-  adEnabled: false
+  adEnabled: false,
+  reviewMode: false
 }
 
 function tryDecrypt(payload) {
@@ -42,7 +43,8 @@ function normalizeConfig(raw) {
   if (!raw || typeof raw !== 'object') return { ...DEFAULT_CONFIG }
   const data = raw.data && typeof raw.data === 'object' ? raw.data : raw
   return {
-    adEnabled: data.adEnabled === true || data.adEnabled === 1
+    adEnabled: data.adEnabled === true || data.adEnabled === 1,
+    reviewMode: data.reviewMode === true || data.reviewMode === 1
   }
 }
 
@@ -96,8 +98,17 @@ function isAdEnabled() {
   return getCachedConfig().adEnabled === true
 }
 
+/**
+ * 是否处于审核模式
+ * true = 审核中，隐藏网盘链接、手机号绑定等敏感功能
+ */
+function isReviewMode() {
+  return getCachedConfig().reviewMode === true
+}
+
 module.exports = {
   fetchGlobalConfig,
   getCachedConfig,
-  isAdEnabled
+  isAdEnabled,
+  isReviewMode
 }

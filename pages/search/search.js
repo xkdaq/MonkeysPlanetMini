@@ -1,6 +1,6 @@
 const { getSearchList } = require('../../utils/article-api.js')
 const { getMaterialList } = require('../../utils/material-api.js')
-const { isAdEnabled } = require('../../utils/global-config.js')
+const { isAdEnabled, isReviewMode } = require('../../utils/global-config.js')
 
 // 激励视频广告实例
 let videoAd = null
@@ -153,7 +153,11 @@ Page({
     const contentNew = isHTML ? content.replace(/<[^>]+>/g, '') : content
 
     if (type === 1) {
-      // 1 打开外部链接
+      // 1 打开外部链接（审核模式下禁用）
+      if (isReviewMode()) {
+        wx.showToast({ title: '暂不支持打开该链接', icon: 'none' })
+        return
+      }
       wx.navigateTo({
         url: `/pages/webview/webview?url=${encodeURIComponent(contentNew)}`
       })

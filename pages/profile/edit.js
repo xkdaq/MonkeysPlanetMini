@@ -1,4 +1,5 @@
 const api = require('../../utils/api.js')
+const { upload } = require('../../utils/request.js')
 
 Page({
   data: {
@@ -38,36 +39,24 @@ Page({
     })
   },
 
-  // 上传头像
+  // 上传头像（真实上传到服务器，后端会做内容安全检测）
   async uploadAvatar(filePath) {
     try {
-      wx.showLoading({ title: '上传中...' })
-      
-      // 这里需要调用上传接口，暂时使用本地路径
-      // 实际项目中应该上传到服务器
-      const res = await this.doUpload(filePath)
-      
+      wx.showLoading({ title: '上传中...', mask: true })
+
+      const res = await upload('/mp/user/avatar/upload', filePath, 'file')
+
       this.setData({
-        avatarUrl: res.url
+        avatarUrl: res.data.url
       })
-      
+
       wx.hideLoading()
       wx.showToast({ title: '上传成功', icon: 'success' })
     } catch (error) {
       wx.hideLoading()
-      wx.showToast({ title: '上传失败', icon: 'none' })
+      // 违规头像等错误提示由 upload 内部 toast 展示
+      console.error('头像上传失败:', error)
     }
-  },
-
-  // 实际上传逻辑（需要后端支持）
-  doUpload(filePath) {
-    return new Promise((resolve, reject) => {
-      // 临时方案：使用本地路径
-      // 实际应该调用 wx.uploadFile 上传到服务器
-      setTimeout(() => {
-        resolve({ url: filePath })
-      }, 500)
-    })
   },
 
   // 昵称输入
@@ -119,7 +108,8 @@ Page({
       }, 1500)
     } catch (error) {
       wx.hideLoading()
-      wx.showToast({ title: '保存失败', icon: 'none' })
+      // 优先展示后端返回的错误信息（如昵称含违规内容）
+      wx.showToast({ title: (error && error.msg) || '保存失败', icon: 'none' })
     }
   }
 })

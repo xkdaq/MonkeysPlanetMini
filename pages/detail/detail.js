@@ -1,12 +1,15 @@
 const { getArticleDetail } = require('../../utils/article-api.js')
 const { getMaterialDetail } = require('../../utils/material-api.js')
 const { reportVisit } = require('../../utils/visit.js')
+const { isReviewMode } = require('../../utils/global-config.js')
 
 Page({
   data: {
     title: '',
     htmlContent: '',
     type: 0,
+    // 审核模式：隐藏网盘链接区、禁止打开外部链接
+    reviewMode: false,
     // 当前资料/文章ID（用于统计上报）
     materialId: null,
     // 资料详情专用字段
@@ -22,7 +25,7 @@ Page({
     const id = options?.id
     const type = options?.type || '0'
     console.log('拿到的 id 是：', id, 'type:', type)
-    this.setData({ type })
+    this.setData({ type, reviewMode: isReviewMode() })
 
     if (!id) {
       wx.showToast({ title: '参数错误', icon: 'none' })
@@ -70,6 +73,11 @@ Page({
   },
 
   onLinkTap(e) {
+    // 审核模式下不打开外部链接
+    if (this.data.reviewMode) {
+      wx.showToast({ title: '暂不支持打开该链接', icon: 'none' })
+      return
+    }
     const link = e.detail.href
     if (link.startsWith('http')) {
       wx.navigateTo({

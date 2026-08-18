@@ -35,8 +35,8 @@
     <view class="word-count">{{content.length}}/500</view>
   </view>
 
-  <!-- 联系方式 -->
-  <view class="form-section">
+  <!-- 联系方式（审核模式下隐藏，不收集） -->
+  <view class="form-section" wx:if="{{!reviewMode}}">
     <view class="section-title">联系方式（选填）</view>
     <input class="contact-input" 
            placeholder="请留下您的邮箱或手机号，方便我们联系您" 

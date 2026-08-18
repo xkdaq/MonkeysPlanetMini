@@ -1,17 +1,22 @@
 const api = require('../../utils/api.js')
+const { isReviewMode } = require('../../utils/global-config.js')
 const app = getApp()
 
 Page({
   data: {
     userInfo: null,
-    isLogin: false
+    isLogin: false,
+    // 审核模式：隐藏绑定手机号/修改密码入口
+    reviewMode: false
   },
 
   onLoad() {
+    this.setData({ reviewMode: isReviewMode() })
     this.checkLoginStatus()
   },
 
   onShow() {
+    this.setData({ reviewMode: isReviewMode() })
     this.checkLoginStatus()
     // 每次显示页面时刷新用户信息
     if (this.data.isLogin) {

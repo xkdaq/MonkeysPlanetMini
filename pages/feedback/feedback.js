@@ -1,6 +1,7 @@
 // pages/feedback/feedback.js
 const api = require('../../utils/api.js')
 const { openLegalPage } = require('../../utils/legal.js')
+const { isReviewMode } = require('../../utils/global-config.js')
 
 Page({
   data: {
@@ -18,11 +19,13 @@ Page({
     contact: '',
     images: [],
     // 隐私协议同意状态
-    privacyAgreed: false
+    privacyAgreed: false,
+    // 审核模式：隐藏联系方式输入框
+    reviewMode: false
   },
 
   onLoad() {
-    // 页面加载
+    this.setData({ reviewMode: isReviewMode() })
   },
 
   // 切换隐私协议同意状态
@@ -160,7 +163,8 @@ Page({
         feedbackType,
         title: title.trim(),
         content: content.trim(),
-        contact: contact.trim() || null,
+        // 审核模式下不收集联系方式
+        contact: this.data.reviewMode ? null : (contact.trim() || null),
         images: imageUrls
       })
 

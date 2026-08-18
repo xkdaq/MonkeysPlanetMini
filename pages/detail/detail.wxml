@@ -12,8 +12,8 @@
     <mp-html content="{{htmlContent}}" selectable="true" bindlinktap="onLinkTap"/>
   </view>
 
-  <!-- 网盘操作区 -->
-  <block wx:if="{{type === 'material'}}">
+  <!-- 网盘操作区（审核模式下隐藏） -->
+  <block wx:if="{{type === 'material' && !reviewMode}}">
     <!-- 有网盘链接 -->
     <view wx:if="{{baiduUrl || quarkUrl}}" class="action-section">
       <view class="section-label">

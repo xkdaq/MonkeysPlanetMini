@@ -1,5 +1,6 @@
 const { getListData } = require('../../utils/article-api.js')
 const { canViewToday, recordView } = require('../../utils/viewLimit.js')
+const { isReviewMode } = require('../../utils/global-config.js')
 
 Page({
   data: {
@@ -105,6 +106,11 @@ Page({
     recordView()
 
     if (type === 1) {
+      // 打开外部链接（审核模式下禁用）
+      if (isReviewMode()) {
+        wx.showToast({ title: '暂不支持打开该链接', icon: 'none' })
+        return
+      }
       wx.navigateTo({
         url: `/pages/webview/webview?url=${encodeURIComponent(contentNew)}`
       })
