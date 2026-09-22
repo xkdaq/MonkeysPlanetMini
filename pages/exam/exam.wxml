@@ -1,6 +1,16 @@
 <!--pages/exam/exam.wxml-->
 <view class="container">
   <block wx:if="{{isBankList}}">
+    <!-- 教育学背诵入口 -->
+    <view class="edu-entry" bindtap="goEduModule">
+      <view class="edu-entry-icon">教</view>
+      <view class="edu-entry-info">
+        <view class="edu-entry-name">教育学 · 趣味背诵</view>
+        <view class="edu-entry-desc">大转盘抽题 · 连连看配对，边玩边记 333</view>
+      </view>
+      <text class="edu-entry-go">去玩</text>
+    </view>
+
     <view class="bank-list-header">
       <view>
         <view class="bank-list-title">选择题库</view>

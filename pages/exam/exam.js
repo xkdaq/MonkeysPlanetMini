@@ -371,6 +371,11 @@ Page({
     })
   },
 
+  // 进入教育学背诵模块
+  goEduModule() {
+    wx.navigateTo({ url: '/pages/edu/index' })
+  },
+
   // 下拉刷新
   async onPullDownRefresh() {
     if (this.data.viewMode === 'bankDetail' && this.data.currentBankId) {

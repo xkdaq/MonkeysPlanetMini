@@ -1,0 +1,130 @@
+<!--pages/edu-wheel/wheel.wxml-->
+<view class="wheel-page">
+  <!-- 题库条 -->
+  <view class="bank-bar" bindtap="openBankSheet">
+    <view class="bank-bar-left">
+      <text class="bank-bar-name">{{currentBankName}}</text>
+      <text class="bank-bar-desc">{{currentBankDesc}}</text>
+    </view>
+    <view class="bank-bar-right">
+      <text class="bank-bar-txt">切换</text>
+      <text class="bank-bar-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 转盘 -->
+  <!-- 弹层打开时隐藏：canvas 同层渲染在部分环境不生效，会盖住弹层 -->
+  <view
+    class="wheel-wrap"
+    style="width:{{size}}px;height:{{size}}px;"
+    hidden="{{showBankSheet || showMoreSheet || showHistorySheet || showThinkTip}}"
+  >
+    <canvas
+      type="2d"
+      id="wheelCanvas"
+      class="wheel-canvas"
+      style="width:{{size}}px;height:{{size}}px;"
+      bindtap="onCanvasTap"
+    ></canvas>
+  </view>
+
+  <view class="wheel-tip" wx:if="{{!loading && !errorMsg}}">
+    共 {{questionCount}} 题<text wx:if="{{noRepeat && drawnCount > 0}}"> · 已抽 {{drawnCount}} 题</text>
+  </view>
+
+  <view class="empty-hint" wx:if="{{loading}}">题库加载中...</view>
+  <view class="empty-hint" wx:if="{{errorMsg}}">
+    <text>{{errorMsg}}</text>
+    <view class="retry-btn" bindtap="loadBanks">重新加载</view>
+  </view>
+
+  <!-- 工具条 -->
+  <view class="tool-bar" wx:if="{{!loading && !errorMsg}}">
+    <view class="tool-item" bindtap="openMoreSheet">设置</view>
+    <view class="tool-item" bindtap="openHistorySheet">抽题历史</view>
+  </view>
+
+  <!-- 题目卡片 -->
+  <view class="q-card" wx:if="{{showQuestion}}">
+    <view class="q-meta">
+      <text class="q-tag">{{qType}}</text>
+      <text class="q-score">{{qScore}}分</text>
+      <text class="q-index">第{{qIndex}}题 / 共{{qTotal}}题</text>
+    </view>
+    <view class="q-title">{{qTitle}}</view>
+    <view class="btn-row">
+      <view class="btn-primary" bindtap="onToggleAnalysis">{{analysisOpen ? '收起解析' : '查看解析'}}</view>
+      <view class="btn-outline" bindtap="onSpinTap">再抽一题</view>
+    </view>
+    <view class="analysis-box" wx:if="{{analysisOpen}}">
+      <rich-text nodes="{{analysisNodes}}" space="nbsp"></rich-text>
+    </view>
+  </view>
+</view>
+
+<!-- 思考提示 -->
+<view class="think-tip" wx:if="{{showThinkTip}}">
+  <text>别着急 · 先思考一下</text>
+  <text class="think-sub">再看解析效果更好</text>
+</view>
+
+<!-- 题库弹层 -->
+<view class="mask" wx:if="{{showBankSheet}}" bindtap="closeBankSheet"></view>
+<view class="sheet" wx:if="{{showBankSheet}}">
+  <view class="sheet-title">选择题库</view>
+  <scroll-view scroll-y class="sheet-list">
+    <view
+      class="bank-option {{item.id == currentBankId ? 'active' : ''}}"
+      wx:for="{{banks}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onBankSelect"
+    >
+      <text class="opt-name">{{item.name}}</text>
+      <text class="opt-count">{{item.questionCount}}题</text>
+    </view>
+  </scroll-view>
+  <view class="sheet-close" bindtap="closeBankSheet">取消</view>
+</view>
+
+<!-- 设置弹层 -->
+<view class="mask" wx:if="{{showMoreSheet}}" bindtap="closeMoreSheet"></view>
+<view class="sheet" wx:if="{{showMoreSheet}}">
+  <view class="sheet-title">设置</view>
+  <view class="setting-row">
+    <view class="setting-left">
+      <text class="setting-label">抽过的题不再重复</text>
+      <text class="setting-desc" wx:if="{{drawnCount > 0}}">本题库已抽 {{drawnCount}} / {{questionCount}}</text>
+    </view>
+    <switch checked="{{noRepeat}}" bindchange="onNoRepeatChange" color="#07c160" />
+  </view>
+  <view class="setting-row" bindtap="resetDrawn">
+    <text class="setting-label">重置本题库抽题记录</text>
+    <text class="setting-arrow">›</text>
+  </view>
+  <view class="sheet-close" bindtap="closeMoreSheet">关闭</view>
+</view>
+
+<!-- 抽题历史弹层 -->
+<view class="mask" wx:if="{{showHistorySheet}}" bindtap="closeHistorySheet"></view>
+<view class="sheet history-sheet" wx:if="{{showHistorySheet}}">
+  <view class="sheet-title">抽题历史</view>
+  <scroll-view scroll-y class="sheet-list">
+    <view
+      class="history-item"
+      wx:for="{{history}}"
+      wx:key="ts"
+      data-item="{{item}}"
+      bindtap="onHistoryTap"
+    >
+      <text class="history-title">{{item.title}}</text>
+      <view class="history-meta">
+        <text>{{item.bankName}}</text>
+        <text>{{item.time}}</text>
+      </view>
+    </view>
+    <view class="history-empty" wx:if="{{history.length == 0}}">还没有抽题记录</view>
+  </scroll-view>
+  <view class="sheet-close" bindtap="clearHistory">清空历史</view>
+  <view class="sheet-close ghost" bindtap="closeHistorySheet">关闭</view>
+</view>

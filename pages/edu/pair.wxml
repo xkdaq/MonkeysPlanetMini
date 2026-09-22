@@ -1,0 +1,112 @@
+<!--pages/edu/pair.wxml-->
+<view class="pair-page">
+  <!-- 关卡条 -->
+  <view class="level-bar">
+    <view class="level-info">
+      <text class="level-label">{{levelLabel}}</text>
+      <text class="level-name">{{levelName}}</text>
+    </view>
+    <view class="level-pick" bindtap="openLevelSheet">切换关卡 ›</view>
+  </view>
+
+  <view class="progress-row">
+    <view class="track"><view class="fill" style="width:{{progress}}%"></view></view>
+    <text class="remain">剩余 {{remain}} 组</text>
+  </view>
+
+  <!-- 统计 -->
+  <view class="stat-bar">
+    <view class="stat"><text class="v score">{{score}}</text><text class="l">得分</text></view>
+    <view class="stat"><text class="v combo">{{combo}}</text><text class="l">连击</text></view>
+    <view class="stat"><text class="v cleared">{{cleared}}</text><text class="l">已消除</text></view>
+    <view class="stat"><text class="v">{{accuracy}}</text><text class="l">正确率</text></view>
+    <view class="stat"><text class="v time">{{timeText}}</text><text class="l">用时</text></view>
+  </view>
+
+  <!-- 工具 -->
+  <view class="tool-row">
+    <view class="tool {{reveal ? 'on' : ''}}" bindtap="onToggleReveal">对答案</view>
+    <view class="tool {{vibrate ? 'on' : ''}}" bindtap="onToggleVibrate">振动</view>
+    <view class="tool" bindtap="enterWrong">
+      错题重练<text wx:if="{{wrongCount > 0}}">（{{wrongCount}}）</text>
+    </view>
+  </view>
+
+  <!-- 棋盘 -->
+  <view class="board">
+    <view class="col q">
+      <view class="col-head"><text class="dot"></text>题目</view>
+      <view
+        class="card q {{item.done ? 'gone' : ''}} {{item.sel ? 'sel' : ''}} {{item.bad ? 'bad' : ''}} {{item.good ? 'good' : ''}} {{item.hint ? 'hint' : ''}}"
+        wx:for="{{qCards}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onCardTap"
+      >{{item.text}}</view>
+    </view>
+
+    <view class="col a">
+      <view class="col-head"><text class="dot"></text>答案</view>
+      <view
+        class="card a {{item.done ? 'gone' : ''}} {{item.sel ? 'sel' : ''}} {{item.bad ? 'bad' : ''}} {{item.good ? 'good' : ''}} {{item.hint ? 'hint' : ''}}"
+        wx:for="{{aCards}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onCardTap"
+      >{{item.text}}</view>
+    </view>
+  </view>
+
+  <!-- 操作 -->
+  <view class="act-row">
+    <view class="btn gold" bindtap="onHint">{{hintFree > 0 ? '提示（免费 1 次）' : '提示（-20 分）'}}</view>
+    <view class="btn ghost" bindtap="onShuffle">重排</view>
+    <view class="btn warn" bindtap="onReset">重新开始</view>
+  </view>
+
+  <view class="tip">进度自动保存在本机 · 答对一组即从错题本移除</view>
+</view>
+
+<!-- 关卡弹层 -->
+<view class="mask" wx:if="{{showLevelSheet}}" bindtap="closeLevelSheet"></view>
+<view class="sheet" wx:if="{{showLevelSheet}}">
+  <view class="sheet-title">选择关卡</view>
+  <scroll-view scroll-y class="sheet-list">
+    <view
+      class="lvl-opt {{item.active ? 'active' : ''}} {{item.locked ? 'locked' : ''}}"
+      wx:for="{{levelOptions}}"
+      wx:key="index"
+      data-index="{{item.index}}"
+      bindtap="onLevelSelect"
+    >
+      <text class="opt-idx">{{item.index + 1}}</text>
+      <text class="opt-name">{{item.name}}</text>
+      <text class="opt-meta">{{item.meta}}</text>
+    </view>
+    <view class="lvl-opt" wx:if="{{hasWrong}}" data-index="-1" bindtap="onLevelSelect">
+      <text class="opt-idx">错</text>
+      <text class="opt-name">错题重练</text>
+      <text class="opt-meta">{{wrongCount}} 题</text>
+    </view>
+  </scroll-view>
+  <view class="sheet-close" bindtap="closeLevelSheet">关闭</view>
+</view>
+
+<!-- 通关弹窗 -->
+<view class="mask" wx:if="{{showResult}}"></view>
+<view class="result" wx:if="{{showResult}}">
+  <view class="badge">通</view>
+  <view class="r-title">{{resultTitle}}</view>
+  <view class="r-lead">{{resultLead}}</view>
+  <view class="tally">
+    <view class="tally-item"><text class="t-v">{{score}}</text><text class="t-l">总分</text></view>
+    <view class="tally-item"><text class="t-v">{{accuracy}}</text><text class="t-l">正确率</text></view>
+    <view class="tally-item"><text class="t-v">{{timeText}}</text><text class="t-l">用时</text></view>
+    <view class="tally-item"><text class="t-v">{{wrongCount}}</text><text class="t-l">错题</text></view>
+  </view>
+  <view class="r-row">
+    <view class="btn primary" bindtap="onReset">再玩一次</view>
+    <view class="btn ghost" wx:if="{{showWrongBtn}}" bindtap="enterWrong">只练错题</view>
+    <view class="btn ghost" bindtap="closeResult">关闭</view>
+  </view>
+</view>
