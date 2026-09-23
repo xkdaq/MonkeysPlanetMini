@@ -40,7 +40,7 @@
 
   <!-- 工具条 -->
   <view class="tool-bar" wx:if="{{!loading && !errorMsg}}">
-    <view class="tool-item" bindtap="openMoreSheet">设置</view>
+    <view class="tool-item" bindtap="openMoreSheet">抽题选项</view>
     <view class="tool-item" bindtap="openHistorySheet">抽题历史</view>
   </view>
 
@@ -90,7 +90,7 @@
 <!-- 设置弹层 -->
 <view class="mask" wx:if="{{showMoreSheet}}" bindtap="closeMoreSheet"></view>
 <view class="sheet" wx:if="{{showMoreSheet}}">
-  <view class="sheet-title">设置</view>
+  <view class="sheet-title">抽题选项</view>
   <view class="setting-row">
     <view class="setting-left">
       <text class="setting-label">抽过的题不再重复</text>

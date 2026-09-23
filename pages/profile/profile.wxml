@@ -13,7 +13,7 @@
           </view>
           <text class="username">ID: {{userInfo.username || '用户_' + userInfo.id}}</text>
         </view>
-        <view class="edit-btn" hover-class="edit-btn-hover" hover-stay-time="60" bindtap="onEditProfile">编辑</view>
+        <view class="edit-btn" hover-class="edit-btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="onEditProfile">编辑</view>
       </view>
     </block>
     <block wx:else>
@@ -26,7 +26,7 @@
   </view>
 
   <!-- 学习概览：三格描边统计卡 -->
-  <view class="stat-card" wx:if="{{isLogin}}" hover-class="stat-card-hover" hover-stay-time="60" bindtap="onStudyRecords">
+  <view class="stat-card" wx:if="{{isLogin}}" hover-class="stat-card-hover" hover-start-time="0" hover-stay-time="70" bindtap="onStudyRecords">
     <view class="stat-item">
       <view class="stat-value">{{stats.total}}</view>
       <view class="stat-label">练习次数</view>
@@ -44,7 +44,7 @@
   <!-- 功能列表 -->
   <view class="menu-card" wx:if="{{isLogin}}">
     <!-- 绑定手机号（审核模式下隐藏） -->
-    <view class="menu-item" wx:if="{{!reviewMode}}" hover-class="menu-item-hover" hover-stay-time="60" bindtap="onBindPhone">
+    <view class="menu-item" wx:if="{{!reviewMode}}" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onBindPhone">
       <view class="menu-icon-wrap">
         <image class="menu-icon-img" src="/images/mine-bind-phone.png" mode="aspectFit"/>
       </view>
@@ -54,14 +54,14 @@
       <text class="menu-arrow">›</text>
     </view>
     <!-- 修改密码（仅已绑定手机号的用户显示，审核模式下隐藏） -->
-    <view class="menu-item" wx:if="{{userInfo.hasPhone && !reviewMode}}" hover-class="menu-item-hover" hover-stay-time="60" bindtap="onChangePassword">
+    <view class="menu-item" wx:if="{{userInfo.hasPhone && !reviewMode}}" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onChangePassword">
       <view class="menu-icon-wrap">
         <image class="menu-icon-img" src="/images/mine-change-pwd.png" mode="aspectFit"/>
       </view>
       <text class="menu-text">修改密码</text>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" hover-class="menu-item-hover" hover-stay-time="60" bindtap="onStudyRecords">
+    <view class="menu-item" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onStudyRecords">
       <view class="menu-icon-wrap">
         <image class="menu-icon-img" src="/images/mine-study.png" mode="aspectFit"/>
       </view>
@@ -72,14 +72,14 @@
 
   <!-- 其他功能 -->
   <view class="menu-card">
-    <view class="menu-item" hover-class="menu-item-hover" hover-stay-time="60" bindtap="goToSettings">
+    <view class="menu-item" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="goToSettings">
       <view class="menu-icon-wrap">
         <image class="menu-icon-img" src="/images/mine-setting.png" mode="aspectFit"/>
       </view>
       <text class="menu-text">设置</text>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" hover-class="menu-item-hover" hover-stay-time="60" bindtap="onAbout">
+    <view class="menu-item" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onAbout">
       <view class="menu-icon-wrap">
         <image class="menu-icon-img" src="/images/mine-about-us.png" mode="aspectFit"/>
       </view>
@@ -87,7 +87,7 @@
       <text class="menu-arrow">›</text>
     </view>
     <!-- 问题反馈功能 -->
-    <view class="menu-item" hover-class="menu-item-hover" hover-stay-time="60" bindtap="onFeedback">
+    <view class="menu-item" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onFeedback">
       <view class="menu-icon-wrap">
         <image class="menu-icon-img" src="/images/mine-hao-ping.png" mode="aspectFit"/>
       </view>
@@ -97,5 +97,5 @@
   </view>
 
   <!-- 退出登录：降级为一行文字 -->
-  <view class="logout-text" wx:if="{{isLogin}}" hover-class="logout-text-hover" hover-stay-time="60" bindtap="onLogout">退出登录</view>
+  <view class="logout-text" wx:if="{{isLogin}}" hover-class="logout-text-hover" hover-start-time="0" hover-stay-time="70" bindtap="onLogout">退出登录</view>
 </view>

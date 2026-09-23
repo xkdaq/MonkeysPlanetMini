@@ -1,98 +1,209 @@
 /* pages/setting/setting.wxss */
 
-.settings-container {
+.setting-container {
   min-height: 100vh;
   background: var(--bg-color);
-  padding: 60rpx 40rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 32rpx 32rpx 60rpx;
+  box-sizing: border-box;
 }
 
-/* Logo区域 */
-.logo-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 60rpx;
-  margin-top: 40rpx;
+/* 组标题之间的间距（首个不留上边距） */
+.section-title {
+  margin-top: 36rpx;
 }
 
-.logo-wrap {
-  width: 140rpx;
-  height: 140rpx;
-  background: #fff;
-  border-radius: 40rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.section-title:first-child {
+  margin-top: 0;
+}
+
+/* ===== 偏好卡 ===== */
+.pref-card,
+.menu-card {
+  background: var(--white);
   border: 2rpx solid var(--border-color);
-  margin-bottom: 30rpx;
-  padding: 20rpx;
+  border-radius: var(--radius);
+  padding: 0 30rpx;
 }
 
-.logo-wrap:active {
+.pref-item {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 26rpx 0;
+  border-bottom: 2rpx solid var(--border-color);
+}
+
+.pref-item:last-child {
+  border-bottom: none;
+}
+
+.pref-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.pref-label {
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.pref-desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+}
+
+/* 二格分段器：沿用全局 .tag 的配色与圆角，只放大点击区
+   （未选中＝ tag-default 的描边式，选中＝ tag-primary 的绿浅底） */
+.seg {
+  flex: none;
+  display: flex;
+  gap: 10rpx;
+}
+
+.seg-item {
+  padding: 12rpx 26rpx;
+  border-radius: 14rpx;
+  border: 2rpx solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 24rpx;
+  line-height: 1.4;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.seg-item.active {
+  background: var(--primary-light);
+  border-color: var(--primary-line);
+  color: var(--primary-deep);
+  font-weight: 600;
+}
+
+.seg-item-hover {
   opacity: 0.7;
 }
 
-.logo {
-  width: 160rpx;
-  height: 160rpx;
+/* 原生 switch 偏大，缩一点以贴合行高 */
+.pref-switch {
+  flex: none;
+  transform: scale(0.82);
+  transform-origin: right center;
 }
 
-.app-name {
-  font-size: 40rpx;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 12rpx;
-}
-
-.app-slogan {
-  font-size: 26rpx;
-  color: var(--text-tertiary);
-}
-
-/* 信息卡片 */
-.info-card {
-  width: 100%;
-  background: #fff;
-  border-radius: 20rpx;
-  padding: 20rpx 0;
+/* ===== 今日额度（只读，不可点） ===== */
+.quota-card {
+  background: var(--white);
   border: 2rpx solid var(--border-color);
-  margin-bottom: 60rpx;
+  border-radius: var(--radius);
+  padding: 30rpx;
 }
 
-.info-item {
+.quota-head {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30rpx 40rpx;
+  align-items: flex-start;
+  gap: 24rpx;
 }
 
-.info-label {
-  font-size: 30rpx;
-  color: var(--text-secondary);
+.quota-main {
+  flex: 1;
+  min-width: 0;
 }
 
-.info-value {
-  font-size: 30rpx;
+.quota-label {
+  font-size: 28rpx;
   color: var(--text-primary);
-  font-weight: 500;
 }
 
-.info-divider {
-  height: 1rpx;
-  background: var(--border-color);
-  margin: 0 40rpx;
-}
-
-/* 底部版权 */
-.footer {
-  margin-top: auto;
-  padding-bottom: 40rpx;
-}
-
-.copyright {
-  font-size: 24rpx;
+.quota-desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
   color: var(--text-tertiary);
+}
+
+.quota-num {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+}
+
+.quota-value {
+  font-size: 38rpx;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--primary-deep);
+}
+
+.quota-value.is-empty {
+  color: var(--text-tertiary);
+}
+
+.quota-total {
+  margin-left: 6rpx;
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+}
+
+.quota-bar {
+  margin-top: 22rpx;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: var(--border-color);
+  overflow: hidden;
+}
+
+.quota-bar-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: var(--primary-color);
+  transition: width 0.25s ease;
+}
+
+/* ===== 菜单卡 ===== */
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 2rpx solid var(--border-color);
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item-hover {
+  background: var(--bg-color);
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.menu-arrow {
+  flex: none;
+  font-size: 30rpx;
+  line-height: 1;
+  color: var(--text-deco);
+}
+
+/* 只读行：没有箭头也不该有点击反馈 */
+.menu-note {
+  flex: none;
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+}
+
+/* ===== 页脚 ===== */
+.foot {
+  margin-top: 48rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+}
+
+.foot-version {
+  padding: 8rpx 4rpx;
 }

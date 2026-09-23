@@ -1,4 +1,5 @@
 const api = require('../../utils/api.js')
+const prefs = require('../../utils/prefs.js')
 
 // 本地存储键名
 const STORAGE_KEY_PRACTICE_PROGRESS = 'practice_progress'
@@ -42,8 +43,10 @@ Page({
     categoryName: '',
     timer: null,
     
-    // 模式切换
-    practiceMode: 'answer', // 'answer'-答题模式 'study'-背题模式
+    // 模式切换 'answer'-答题模式 'study'-背题模式
+    // 初值在 onLoad 里按设置页的「默认刷题模式」覆盖；
+    // 注意恢复存档时以存档里的模式为准（见 resumeProgress），存档优先级高于全局默认
+    practiceMode: 'answer',
     
     // 加载状态
     loading: true,
@@ -87,6 +90,8 @@ Page({
       bankId: bankId ? parseInt(bankId) : null,
       categoryId: categoryId ? parseInt(categoryId) : null,
       practiceType: parseInt(practiceType),
+      // 全局默认刷题模式（设置页可改）；有存档时后面 resumeProgress 会用存档里的覆盖回来
+      practiceMode: prefs.getPracticeMode(),
       categoryName: categoryNameText,
       bankName: bankNameText,
       // 章节练习没有单独传 title，用章节名兜底（此前会一律回落成「练习」）
@@ -123,8 +128,9 @@ Page({
       if (index > 0) {
         this.setData({ currentIndex: index })
       }
-    } else if (autoResume === '1') {
-      // 从「继续上次练习」进来：直接恢复，不再多弹一次确认
+    } else if (autoResume === '1' || prefs.getBool('autoResume')) {
+      // 从「继续上次练习」进来，或用户在设置页开了「继续上次练习不再询问」：
+      // 直接恢复，不弹确认框。恢复逻辑本身不变。
       this.setData({ savedProgress })
       this.resumeProgress()
     } else {
@@ -234,6 +240,8 @@ Page({
       answerRecords: savedProgress.answerRecords || [],
       correctCount: savedProgress.correctCount || 0,
       wrongCount: savedProgress.wrongCount || 0,
+      // 存档里的模式优先于设置页的全局默认：
+      // 用户用背题模式做了一半，退出再进来必须还是背题模式
       practiceMode: savedProgress.practiceMode || 'answer',
       duration: savedProgress.duration || 0,
       startTime: Date.now() - (savedProgress.duration || 0) * 1000

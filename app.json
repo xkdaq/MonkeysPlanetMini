@@ -23,7 +23,8 @@
     "pages/profile/about",
     "pages/profile/records",
     "pages/profile/bind-phone",
-    "pages/profile/change-password"
+    "pages/profile/change-password",
+    "pages/legal/legal"
   ],
   "window": {
     "backgroundTextStyle": "light",

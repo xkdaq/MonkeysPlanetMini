@@ -1,28 +1,90 @@
-<view class="settings-container">
-  <!-- Logo区域 -->
-  <view class="logo-section">
-    <view class="logo-wrap" bindtap="onLogoTap">
-      <image class="logo" src="/images/logo.png" mode="aspectFit"/>
+<!--pages/setting/setting.wxml-->
+<view class="setting-container">
+
+  <!-- 学习偏好 -->
+  <view class="section-title">
+    学习偏好
+    <text class="section-extra">下次进入时生效</text>
+  </view>
+  <view class="pref-card">
+    <view class="pref-item">
+      <view class="pref-main">
+        <view class="pref-label">默认刷题模式</view>
+        <view class="pref-desc">进入题库时用哪种模式；接着上次的存档时仍按存档里的模式</view>
+      </view>
+      <view class="seg">
+        <view class="seg-item {{practiceMode === 'answer' ? 'active' : ''}}" hover-class="seg-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onPracticeModeTap" data-mode="answer">答题</view>
+        <view class="seg-item {{practiceMode === 'study' ? 'active' : ''}}" hover-class="seg-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onPracticeModeTap" data-mode="study">背题</view>
+      </view>
     </view>
-    <text class="app-name">猴哥星球</text>
-    <!-- <text class="app-slogan">双击Logo有惊喜</text> -->
+    <view class="pref-item">
+      <view class="pref-main">
+        <view class="pref-label">继续上次练习不再询问</view>
+        <view class="pref-desc">有未完成的练习时直接接着做，不弹恢复确认框</view>
+      </view>
+      <switch class="pref-switch" color="#07c160" checked="{{autoResume}}" bindchange="onAutoResumeChange"/>
+    </view>
+    <view class="pref-item">
+      <view class="pref-main">
+        <view class="pref-label">抽过的题不再重复</view>
+        <view class="pref-desc">大转盘抽题时跳过本题库已抽过的题</view>
+      </view>
+      <switch class="pref-switch" color="#07c160" checked="{{noRepeat}}" bindchange="onNoRepeatChange"/>
+    </view>
   </view>
 
-  <!-- 版本信息卡片 -->
-  <view class="info-card">
-    <view class="info-item">
-      <text class="info-label">版本号</text>
-      <text class="info-value">{{versionCode}}</text>
+  <!-- 答题手感 -->
+  <view class="section-title">
+    答题手感
+    <text class="section-extra">连连看</text>
+  </view>
+  <view class="pref-card">
+    <view class="pref-item">
+      <view class="pref-main">
+        <view class="pref-label">振动反馈</view>
+        <view class="pref-desc">配对成功或失败时手机轻微震动</view>
+      </view>
+      <switch class="pref-switch" color="#07c160" checked="{{vibrate}}" bindchange="onVibrateChange"/>
     </view>
-    <view class="info-divider"></view>
-    <view class="info-item">
-      <text class="info-label">版本名</text>
-      <text class="info-value">{{version}}</text>
+    <view class="pref-item">
+      <view class="pref-main">
+        <view class="pref-label">答错时公布正确答案</view>
+        <view class="pref-desc">关闭则只提示不匹配，留给自己再想一次</view>
+      </view>
+      <switch class="pref-switch" color="#07c160" checked="{{pairReveal}}" bindchange="onPairRevealChange"/>
     </view>
   </view>
 
-  <!-- 版权信息 -->
-  <view class="footer">
-    <text class="copyright">© 2026 猴哥星球 版权所有</text>
+  <!-- 今日额度 -->
+  <view class="section-title">今日额度</view>
+  <view class="quota-card">
+    <view class="quota-head">
+      <view class="quota-main">
+        <view class="quota-label">今日剩余查看次数</view>
+        <view class="quota-desc">{{quotaUsedUp ? '今日已用完，明日 0 点恢复' : '每日 ' + maxViews + ' 次，次日 0 点自动重置'}}</view>
+      </view>
+      <view class="quota-num">
+        <text class="quota-value {{quotaUsedUp ? 'is-empty' : ''}}">{{remaining}}</text>
+        <text class="quota-total">/ {{maxViews}}</text>
+      </view>
+    </view>
+    <view class="quota-bar">
+      <view class="quota-bar-fill" style="width: {{quotaPercent}}%"></view>
+    </view>
+  </view>
+
+  <!-- 隐私（协议与政策正文在「关于我们」页，这里不重复入口） -->
+  <view class="section-title" wx:if="{{privacyDate}}">隐私</view>
+  <view class="menu-card" wx:if="{{privacyDate}}">
+    <view class="menu-item">
+      <text class="menu-text">已同意隐私政策</text>
+      <text class="menu-note">{{privacyDate}}</text>
+    </view>
+  </view>
+
+  <!-- 页脚 -->
+  <view class="foot safe-area-bottom">
+    <text class="foot-version" bindtap="onVersionTap">猴哥星球 v{{version}}</text>
+    <text class="foot-copy"> · © {{year}} 版权所有</text>
   </view>
 </view>

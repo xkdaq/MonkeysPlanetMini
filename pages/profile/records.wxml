@@ -25,7 +25,7 @@
     <view class="list-title">练习记录</view>
 
     <block wx:if="{{records.length > 0}}">
-      <view class="record-item" wx:for="{{records}}" wx:key="id" hover-class="record-item-hover" hover-stay-time="60" bindtap="onRecordTap" data-id="{{item.id}}">
+      <view class="record-item" wx:for="{{records}}" wx:key="id" hover-class="record-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onRecordTap" data-id="{{item.id}}">
         <view class="record-header">
           <text class="record-type">{{item.practiceTypeName}}</text>
           <text class="record-time">{{item.createTime}}</text>

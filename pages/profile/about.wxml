@@ -1,31 +1,55 @@
 <!--pages/profile/about.wxml-->
 <view class="about-container">
-  <!-- Logo -->
-  <view class="logo-section">
-    <image class="logo" src="/images/logo.png" mode="aspectFit"/>
-    <text class="app-name">{{appName}}</text>
-    <text class="version">版本 {{version}}</text>
+
+  <!-- 品牌卡 -->
+  <view class="brand-card">
+    <image class="brand-logo" src="/images/logo.png" mode="aspectFit"/>
+    <view class="brand-name">{{appName}}</view>
+    <view class="tag tag-primary brand-version">版本 {{version}}</view>
+    <view class="brand-slogan">考研资料 · 题库刷题 · 趣味背诵</view>
   </view>
 
-  <!-- 功能列表 -->
-  <view class="menu-list">
-    <view class="menu-item" bindtap="onContact">
-      <text class="menu-text">联系我们</text>
-      <image class="menu-arrow" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+  <!-- 能做什么 -->
+  <view class="section-title">猴哥星球能做什么</view>
+  <view class="feature-card">
+    <view class="feature-item" wx:for="{{features}}" wx:key="tag">
+      <view class="tag tag-primary feature-tag">{{item.tag}}</view>
+      <view class="feature-text">{{item.text}}</view>
     </view>
-    <view class="menu-item" bindtap="onUserAgreement">
-      <text class="menu-text">用户协议</text>
-      <image class="menu-arrow" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+  </view>
+
+  <!-- 联系与反馈 -->
+  <view class="section-title">联系与反馈</view>
+  <view class="menu-card">
+    <view class="menu-item" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onFeedback">
+      <view class="menu-main">
+        <view class="menu-text">问题反馈</view>
+        <view class="menu-desc">Bug、资料纠错、功能建议</view>
+      </view>
+      <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" bindtap="onPrivacyPolicy">
+    <view class="menu-item">
+      <view class="menu-main">
+        <view class="menu-text">合作邮箱</view>
+        <view class="menu-desc">{{email}}</view>
+      </view>
+      <text class="menu-copy" hover-class="menu-copy-hover" hover-start-time="0" hover-stay-time="70" catchtap="onCopyEmail">复制</text>
+    </view>
+  </view>
+
+  <!-- 法务 -->
+  <view class="section-title">法务</view>
+  <view class="menu-card">
+    <view class="menu-item" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onUserAgreement">
+      <text class="menu-text">用户服务协议</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" hover-class="menu-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onPrivacyPolicy">
       <text class="menu-text">隐私政策</text>
-      <image class="menu-arrow" src="/images/mine-arrow-right.png" mode="aspectFit"/>
+      <text class="menu-arrow">›</text>
     </view>
   </view>
 
-  <!-- 版权信息 -->
-  <view class="footer">
-    <text class="copyright">© 2026 猴哥星球 All Rights Reserved</text>
-    <text class="powered">基于 RuoYi 框架开发</text>
-  </view>
+  <!-- 页脚 -->
+  <view class="foot safe-area-bottom">© {{year}} 猴哥星球 版权所有</view>
 </view>

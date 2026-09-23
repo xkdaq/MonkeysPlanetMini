@@ -21,7 +21,7 @@
     <view wx:if="{{baiduUrl || quarkUrl}}" class="get-card">
       <view class="get-label">获取资料</view>
       <view class="get-list">
-        <view wx:if="{{baiduUrl}}" class="action-item" hover-class="action-item-hover" hover-stay-time="60" bindtap="onPanTap" data-pan="baidu" data-url="{{baiduUrl}}" data-code="{{baiduCode}}">
+        <view wx:if="{{baiduUrl}}" class="action-item" hover-class="action-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onPanTap" data-pan="baidu" data-url="{{baiduUrl}}" data-code="{{baiduCode}}">
           <view class="action-icon">度</view>
           <view class="action-body">
             <text class="action-name">百度网盘</text>
@@ -34,7 +34,7 @@
           </view>
           <view class="action-btn">打开</view>
         </view>
-        <view wx:if="{{quarkUrl}}" class="action-item" hover-class="action-item-hover" hover-stay-time="60" bindtap="onPanTap" data-pan="quark" data-url="{{quarkUrl}}" data-code="{{quarkCode}}">
+        <view wx:if="{{quarkUrl}}" class="action-item" hover-class="action-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onPanTap" data-pan="quark" data-url="{{quarkUrl}}" data-code="{{quarkCode}}">
           <view class="action-icon">夸</view>
           <view class="action-body">
             <text class="action-name">夸克网盘</text>

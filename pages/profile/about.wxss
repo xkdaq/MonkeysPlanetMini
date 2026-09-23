@@ -1,81 +1,153 @@
 /* pages/profile/about.wxss */
 
 .about-container {
-  background-color: var(--bg-color);
   min-height: 100vh;
+  background: var(--bg-color);
+  padding: 32rpx 32rpx 60rpx;
+  box-sizing: border-box;
 }
 
-.logo-section {
+.section-title {
+  margin-top: 36rpx;
+}
+
+/* ===== 品牌卡 ===== */
+.brand-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 80rpx 0;
-  background-color: #fff;
+  background: var(--white);
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 56rpx 32rpx;
 }
 
-.logo {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 24rpx;
-  margin-bottom: 24rpx;
+/* 图片直接定尺寸，不再套外框
+   （旧版 .logo-wrap 是 140rpx 且含 20rpx padding，内部 .logo 却写 160rpx，必然溢出） */
+.brand-logo {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: var(--radius-s);
 }
 
-.app-name {
-  font-size: 40rpx;
-  font-weight: bold;
+.brand-name {
+  margin-top: 24rpx;
+  font-size: 36rpx;
+  font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 12rpx;
 }
 
-.version {
-  font-size: 28rpx;
+.brand-version {
+  margin-top: 16rpx;
+}
+
+.brand-slogan {
+  margin-top: 20rpx;
+  font-size: 22rpx;
   color: var(--text-tertiary);
 }
 
-.menu-list {
-  margin-top: 20rpx;
-  background-color: #fff;
+/* ===== 能做什么 ===== */
+.feature-card {
+  background: var(--white);
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 0 30rpx;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 26rpx 0;
+  border-bottom: 2rpx solid var(--border-color);
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.feature-tag {
+  flex: none;
+  margin-top: 4rpx;
+}
+
+.feature-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 25rpx;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* ===== 菜单卡 ===== */
+.menu-card {
+  background: var(--white);
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 0 30rpx;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 30rpx;
-  border-bottom: 1rpx solid var(--border-color);
+  gap: 20rpx;
+  padding: 28rpx 0;
+  border-bottom: 2rpx solid var(--border-color);
 }
 
 .menu-item:last-child {
   border-bottom: none;
 }
 
+.menu-item-hover {
+  background: var(--bg-color);
+}
+
+.menu-main {
+  flex: 1;
+  min-width: 0;
+}
+
 .menu-text {
-  font-size: 32rpx;
+  flex: 1;
+  font-size: 28rpx;
   color: var(--text-primary);
 }
 
-.menu-arrow {
-  width: 32rpx;
-  height: 32rpx;
-}
-
-.footer {
-  position: fixed;
-  bottom: 40rpx;
-  left: 0;
-  right: 0;
-  text-align: center;
-}
-
-.copyright {
-  display: block;
-  font-size: 24rpx;
-  color: var(--text-tertiary);
-  margin-bottom: 8rpx;
-}
-
-.powered {
-  display: block;
+.menu-desc {
+  margin-top: 6rpx;
   font-size: 22rpx;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+}
+
+.menu-arrow {
+  flex: none;
+  font-size: 30rpx;
+  line-height: 1;
   color: var(--text-deco);
+}
+
+/* 复制按钮：只有它可点，整行不响应 */
+.menu-copy {
+  flex: none;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--primary-deep);
+  padding: 10rpx 18rpx;
+  border: 2rpx solid var(--primary-line);
+  border-radius: 24rpx;
+}
+
+.menu-copy-hover {
+  background: var(--primary-light);
+}
+
+/* ===== 页脚（随文档流，不再 position:fixed） ===== */
+.foot {
+  margin-top: 48rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-tertiary);
 }

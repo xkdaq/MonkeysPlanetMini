@@ -1,0 +1,29 @@
+<!--pages/legal/legal.wxml-->
+<view class="legal-page">
+  <block wx:if="{{!notFound}}">
+    <view class="doc-head">
+      <view class="doc-title">{{title}}</view>
+      <view class="doc-meta">{{meta}}</view>
+    </view>
+
+    <view class="doc-body">
+      <block wx:for="{{blocks}}" wx:key="index">
+        <view wx:if="{{item.t === 'h1'}}" class="b-h1">{{item.v}}</view>
+        <view wx:elif="{{item.t === 'h2'}}" class="b-h2">{{item.v}}</view>
+        <view wx:elif="{{item.t === 'li'}}" class="b-li">{{item.v}}</view>
+        <view wx:elif="{{item.t === 'note'}}" class="b-note">{{item.v}}</view>
+        <view wx:else class="b-p">{{item.v}}</view>
+      </block>
+    </view>
+
+    <view class="doc-contact" hover-class="doc-contact-hover" hover-start-time="0" hover-stay-time="70" bindtap="onCopyEmail">
+      复制联系邮箱 monkeys.xu@qq.com
+    </view>
+
+    <view class="doc-foot">{{copyright}}</view>
+  </block>
+
+  <view wx:else class="doc-empty">
+    <text>文档不存在</text>
+  </view>
+</view>

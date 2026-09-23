@@ -4,6 +4,7 @@
 
 const { LEVELS } = require('../../utils/edu-pairs.js')
 const { reportVisit } = require('../../utils/visit.js')
+const prefs = require('../../utils/prefs.js')
 
 const KEY = 'edu_pair_v1'
 const WRONG = -1
@@ -70,6 +71,14 @@ Page({
   },
 
   onShow() {
+    // 从设置页改完偏好返回时要即时生效
+    const before = this.data.reveal
+    const { reveal } = this.applyPrefs(null)
+    // 对答案由开变关时，把已经公布的高亮一并清掉（与页内开关行为一致）
+    if (before && !reveal) {
+      this.clearHint()
+      this.paint()
+    }
     // 回到页面继续计时；已经结算完的不再走表
     if (!this.data.showResult) this.startClock()
   },
@@ -86,9 +95,7 @@ Page({
         hits: this._hits || 0,
         tries: this._tries || 0,
         secs: this._secs || 0,
-        wrongSet: this._wrongSet || [],
-        vibrate: this.data.vibrate,
-        reveal: this.data.reveal
+        wrongSet: this._wrongSet || []
       })
     } catch (e) {
       console.error('[pair] 存档失败:', e)
@@ -109,6 +116,9 @@ Page({
     } catch (e) {
       console.error('[pair] 读档失败:', e)
     }
+    // 偏好独立于存档：新用户没有存档，但可能已经在设置页改过，所以先无条件读一次
+    this.applyPrefs(raw)
+
     if (!raw) return
 
     try {
@@ -126,8 +136,6 @@ Page({
         score: raw.score || 0,
         combo: raw.combo || 0,
         cleared: raw.cleared || 0,
-        vibrate: raw.vibrate !== false,
-        reveal: raw.reveal === true,
         timeText: this.fmt(this._secs),
         wrongCount: this._wrongSet.length,
         hasWrong: this._wrongSet.length > 0
@@ -135,6 +143,22 @@ Page({
     } catch (e) {
       console.error('[pair] 读档失败:', e)
     }
+  },
+
+  /**
+   * 读取振动 / 对答案两个偏好并同步到视图层。
+   * 这两项从前是存在 edu_pair_v1 存档对象里的，设置页读不到也写不进，
+   * 现在拆到 utils/prefs.js 的独立 key；老存档里还带着旧字段的，第一次读时搬过去。
+   * @param {object|null} legacy 旧存档对象（可能带 vibrate/reveal 字段）
+   */
+  applyPrefs(legacy) {
+    const l = legacy || {}
+    const vibrate = prefs.migrateBoolOnce('vibrate', typeof l.vibrate === 'boolean' ? l.vibrate : undefined)
+    const reveal = prefs.migrateBoolOnce('pairReveal', typeof l.reveal === 'boolean' ? l.reveal : undefined)
+    if (vibrate !== this.data.vibrate || reveal !== this.data.reveal) {
+      this.setData({ vibrate, reveal })
+    }
+    return { vibrate, reveal }
   },
 
   // ===== 计时 =====
@@ -573,6 +597,7 @@ Page({
   onToggleReveal() {
     const reveal = !this.data.reveal
     // 关掉时把上一次公布的答案高亮一并清掉，否则会留在屏幕上直到下次点击
+    prefs.setBool('pairReveal', reveal)
     if (!reveal) {
       this.clearHint()
       this.setData({ reveal })
@@ -590,6 +615,7 @@ Page({
 
   onToggleVibrate() {
     const vibrate = !this.data.vibrate
+    prefs.setBool('vibrate', vibrate)
     this.setData({ vibrate })
     if (vibrate) this.buzz('light')
     this.save()

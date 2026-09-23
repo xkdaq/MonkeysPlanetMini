@@ -13,7 +13,7 @@
       </view>
       <view class="resume-num"><text class="resume-num-cur">{{lastPractice.done}}</text> / {{lastPractice.total}}</view>
     </view>
-    <view class="resume-btn" hover-class="resume-btn-hover" hover-stay-time="60" bindtap="onContinuePractice">继续练习</view>
+    <view class="resume-btn" hover-class="resume-btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="onContinuePractice">继续练习</view>
   </view>
 
   <!-- 趣味背诵 -->
@@ -22,13 +22,13 @@
     <text class="section-more" bindtap="goEduModule">333 教育综合 ›</text>
   </view>
   <view class="game-grid">
-    <view class="game-card" hover-class="game-card-hover" hover-stay-time="60" bindtap="goWheel">
+    <view class="game-card" hover-class="game-card-hover" hover-start-time="0" hover-stay-time="70" bindtap="goWheel">
       <view class="game-badge">转</view>
       <view class="game-name">抽题大转盘</view>
       <view class="game-desc">随机抽题，先想再看</view>
       <view class="game-meta">已抽 {{eduStats.wheelDrawn}} 次</view>
     </view>
-    <view class="game-card" hover-class="game-card-hover" hover-stay-time="60" bindtap="goPair">
+    <view class="game-card" hover-class="game-card-hover" hover-start-time="0" hover-stay-time="70" bindtap="goPair">
       <view class="game-badge is-warm">连</view>
       <view class="game-name">帽子题连连看</view>
       <view class="game-desc">96 组考点闯关配对</view>
@@ -43,7 +43,7 @@
   </view>
 
   <view class="bank-list" wx:if="{{banks.length > 0}}">
-    <view class="bank-item" wx:for="{{banks}}" wx:key="id" hover-class="bank-item-hover" hover-stay-time="60" bindtap="onBankItemTap" data-id="{{item.id}}">
+    <view class="bank-item" wx:for="{{banks}}" wx:key="id" hover-class="bank-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onBankItemTap" data-id="{{item.id}}">
       <view class="bank-info">
         <view class="bank-name">{{item.name}}</view>
         <view class="bank-desc">{{item.description || '暂无题库描述'}}</view>
