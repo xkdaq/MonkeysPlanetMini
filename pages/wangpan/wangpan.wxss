@@ -1,8 +1,19 @@
 .wangpan-page {
   min-height: 100vh;
   background: var(--bg-color);
-  padding: 20rpx 20rpx 40rpx;
+  padding: 0 24rpx 40rpx;
   box-sizing: border-box;
+}
+
+/* 筛选头部：白底描边，吸顶 */
+.filter-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin: 0 -24rpx;
+  padding: 20rpx 24rpx 18rpx;
+  background: var(--white);
+  border-bottom: 2rpx solid var(--border-color);
 }
 
 /* 搜索框 */
@@ -10,10 +21,14 @@
   display: flex;
   align-items: center;
   background: var(--white);
-  margin-bottom: 18rpx;
-  padding: 20rpx 24rpx;
+  margin-bottom: 20rpx;
+  padding: 16rpx 26rpx;
   border-radius: 40rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid var(--border-color);
+}
+
+.search-box-hover {
+  background: var(--bg-color);
 }
 
 .search-icon-wrap {
@@ -39,20 +54,20 @@
 /* 分类标签栏 */
 .category-bar {
   white-space: nowrap;
-  margin: 0 -20rpx 18rpx;
+  margin: 0 -24rpx;
 }
 
 .subject-bar {
-  margin-bottom: 12rpx;
+  margin-bottom: 14rpx;
 }
 
 .subcategory-bar {
-  margin-bottom: 18rpx;
+  margin-bottom: 0;
 }
 
 .category-list {
   display: inline-flex;
-  padding: 0 20rpx;
+  padding: 0 24rpx;
   gap: 14rpx;
 }
 
@@ -67,32 +82,35 @@
   color: var(--text-secondary);
   background: var(--white);
   border-radius: 32rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
-  transition: all 0.2s;
+  border: 2rpx solid var(--border-color);
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
 .category-item.active {
   color: var(--white);
-  background: #1a1a1a;
-  font-weight: 500;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  font-weight: 600;
 }
 
 .category-item.secondary {
-  padding: 10rpx 22rpx;
-  font-size: 24rpx;
-  background: #f7f8fa;
-  box-shadow: none;
+  padding: 8rpx 22rpx;
+  font-size: 23rpx;
+  background: var(--white);
+  color: var(--text-tertiary);
 }
 
+/* 二级筛选选中：绿浅底 + 绿描边，不抢一级的实心绿 */
 .category-item.secondary.active {
-  color: var(--text-primary);
-  background: #e9e9e9;
-  font-weight: 500;
+  color: var(--primary-deep);
+  background: var(--primary-light);
+  border-color: var(--primary-line);
+  font-weight: 600;
 }
 
 /* 单列横向卡片列表 */
 .content-list {
-  padding: 0;
+  padding-top: 24rpx;
 }
 
 .content-card {
@@ -101,14 +119,12 @@
   margin-bottom: 20rpx;
   padding: 24rpx;
   background: var(--white);
-  border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  transition: transform 0.15s ease, background 0.15s ease;
+  border-radius: var(--radius);
+  border: 2rpx solid var(--border-color);
 }
 
-.content-card:active {
-  background: #fafafa;
-  transform: scale(0.99);
+.content-card-hover {
+  background: var(--bg-color);
 }
 
 /* 封面图 */
@@ -117,7 +133,7 @@
   height: 148rpx;
   flex: 0 0 148rpx;
   border-radius: 12rpx;
-  background: #f0f0f0;
+  background: var(--border-color);
 }
 
 /* 内容区 */
@@ -137,8 +153,8 @@
 
 .top-tag {
   background: var(--white);
-  border: 1rpx solid var(--primary-color);
-  color: var(--primary-color);
+  border: 2rpx solid var(--primary-color);
+  color: var(--primary-deep);
   font-size: 20rpx;
   padding: 2rpx 10rpx;
   border-radius: 6rpx;
@@ -164,19 +180,14 @@
   margin-bottom: 14rpx;
 }
 
-/* 网站风格描边标签：默认灰色描边，第一个（科目）绿色描边 */
+/* 标签：统一绿描边 */
 .category-tag {
   font-size: 20rpx;
   padding: 2rpx 12rpx;
   border-radius: 6rpx;
   background: var(--white);
-  border: 1rpx solid #d9d9d9;
-  color: var(--text-secondary);
-}
-
-.category-tag.tag-0 {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
+  border: 2rpx solid var(--primary-color);
+  color: var(--primary-deep);
 }
 
 /* 网盘类型提示 */

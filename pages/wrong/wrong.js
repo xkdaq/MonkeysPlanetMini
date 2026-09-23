@@ -8,7 +8,8 @@ Page({
     grouped: false, // 是否按分类展示
     loading: false,
     expandedCategories: [], // 展开的分类索引
-    categoryNameMap: {} // 分类ID到完整章节路径的映射
+    categoryNameMap: {}, // 分类ID到完整章节路径的映射
+    totalCount: 0 // 错题总数
   },
 
   onLoad(options) {
@@ -56,7 +57,8 @@ Page({
           categories,
           grouped: true,
           loading: false,
-          expandedCategories
+          expandedCategories,
+          totalCount: categories.reduce((n, c) => n + (c.count || 0), 0)
         })
       } else if (Array.isArray(res.data)) {
         // 平铺列表（兼容旧格式或后端不支持分组）
@@ -95,7 +97,8 @@ Page({
           categories,
           grouped: true,
           loading: false,
-          expandedCategories
+          expandedCategories,
+          totalCount: categories.reduce((n, c) => n + (c.count || 0), 0)
         })
       } else {
         // 空数据或其他格式
@@ -103,7 +106,8 @@ Page({
           categories: [],
           grouped: true,
           loading: false,
-          expandedCategories: []
+          expandedCategories: [],
+          totalCount: 0
         })
       }
     } catch (error) {
@@ -236,6 +240,22 @@ Page({
     
     wx.navigateTo({
       url: `/pages/practice/practice?wrongMode=1&questionIds=${questionIds}&title=${category.categoryName}`
+    })
+  },
+
+  // 全部练习：把所有章节的错题合并成一次专项练习
+  startAllPractice() {
+    const { grouped, categories, wrongs } = this.data
+    const all = grouped
+      ? categories.reduce((acc, c) => acc.concat(c.wrongs || []), [])
+      : wrongs
+    if (!all.length) {
+      wx.showToast({ title: '暂无错题', icon: 'none' })
+      return
+    }
+    const questionIds = all.map(w => w.questionId).join(',')
+    wx.navigateTo({
+      url: `/pages/practice/practice?wrongMode=1&questionIds=${questionIds}&title=${encodeURIComponent('错题练习')}`
     })
   },
 

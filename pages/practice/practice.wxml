@@ -2,18 +2,16 @@
 <view class="practice-container">
   <!-- 顶部导航 -->
   <view class="practice-header">
-    <view class="header-top">
-      <view class="progress-info">
-        <text class="current-index">{{currentIndex + 1}}</text>
-        <text class="total-count">/{{totalCount}}</text>
-      </view>
-      <view class="mode-switch">
-        <view class="mode-item {{practiceMode === 'answer' ? 'active' : ''}}" bindtap="onModeChange" data-mode="answer">答题</view>
-        <view class="mode-item {{practiceMode === 'study' ? 'active' : ''}}" bindtap="onModeChange" data-mode="study">背题</view>
-      </view>
+    <view class="progress-info">
+      <text class="current-index">{{currentIndex + 1}}</text>
+      <text class="total-count">/ {{totalCount}}</text>
     </view>
     <view class="progress-bar">
       <view class="progress-fill" style="width: {{((currentIndex + 1) / totalCount) * 100}}%"></view>
+    </view>
+    <view class="mode-switch">
+      <view class="mode-item {{practiceMode === 'answer' ? 'active' : ''}}" bindtap="onModeChange" data-mode="answer">答题</view>
+      <view class="mode-item {{practiceMode === 'study' ? 'active' : ''}}" bindtap="onModeChange" data-mode="study">背题</view>
     </view>
   </view>
 
@@ -25,11 +23,11 @@
   <!-- 题目内容 -->
   <view class="question-content" hidden="{{loading}}">
     <!-- 题目卡片 -->
-    <view class="question-card">
-      <view class="question-category" wx:if="{{currentQuestion.categoryName}}">
-        <text>{{currentQuestion.categoryName}}</text>
+    <view class="question-block">
+      <view class="question-meta" wx:if="{{currentQuestion.categoryName}}">
+        <text class="q-category">{{currentQuestion.categoryName}}</text>
       </view>
-      <rich-text nodes="{{questionTitleWithType}}"></rich-text>
+      <rich-text class="question-title-rt" nodes="{{questionTitleWithType}}"></rich-text>
     </view>
 
     <!-- 选项列表 -->
@@ -38,6 +36,9 @@
         class="option-item {{optionClasses[item.label] || ''}}"
         wx:for="{{questionOptions}}"
         wx:key="label"
+        hover-class="option-item-hover"
+        hover-start-time="0"
+        hover-stay-time="70"
         bindtap="onOptionSelect"
         data-label="{{item.label}}"
       >
@@ -88,14 +89,8 @@
         <view class="analysis-header">
           <text class="analysis-label">文本解析</text>
           <view class="analysis-actions">
-            <view class="action-btn" bindtap="copyAnalysis">
-              <image class="action-icon" src="/images/icon_copy.png" mode="aspectFit"/>
-              <text>复制解析</text>
-            </view>
-            <view class="action-btn" bindtap="showReportModal">
-              <image class="action-icon" src="/images/icon_edit.png" mode="aspectFit"/>
-              <text>纠错</text>
-            </view>
+            <text class="action-link" hover-class="action-link-hover" hover-start-time="0" hover-stay-time="70" bindtap="copyAnalysis">复制解析</text>
+            <text class="action-link" hover-class="action-link-hover" hover-start-time="0" hover-stay-time="70" bindtap="showReportModal">纠错</text>
           </view>
         </view>
         <view class="analysis-body">
@@ -223,31 +218,25 @@
   <!-- 底部操作栏 -->
   <view class="practice-footer">
     <view class="footer-left">
-      <view class="nav-btn {{currentIndex === 0 ? 'disabled' : ''}}" bindtap="onPrevTap">上一题</view>
+      <view class="nav-btn {{currentIndex === 0 ? 'disabled' : ''}}" hover-class="nav-btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="onPrevTap">上一题</view>
     </view>
     <view class="footer-center">
-      <view class="footer-action question-nav" bindtap="onQuestionNav">
-        <view class="footer-action-icon">
-          <text class="footer-action-symbol">▦</text>
-        </view>
+      <view class="footer-action" hover-class="footer-action-hover" hover-start-time="0" hover-stay-time="70" bindtap="onQuestionNav">
+        <image class="footer-action-icon" src="/images/icon_card.png" mode="aspectFit"/>
         <text>答题卡</text>
       </view>
-      <view class="footer-action favorite-btn {{isFavorite ? 'active' : ''}}" bindtap="onFavoriteTap">
-        <view class="footer-action-icon">
-          <text class="footer-action-symbol">{{isFavorite ? '★' : '☆'}}</text>
-        </view>
+      <view class="footer-action favorite-btn {{isFavorite ? 'active' : ''}}" hover-class="footer-action-hover" hover-start-time="0" hover-stay-time="70" bindtap="onFavoriteTap">
+        <image class="footer-action-icon" src="{{isFavorite ? '/images/icon_favorite_active.png' : '/images/icon_favorite.png'}}" mode="aspectFit"/>
         <text>{{isFavorite ? '已收藏' : '收藏'}}</text>
       </view>
-      <view class="footer-action remove-wrong-btn" wx:if="{{wrongMode}}" bindtap="onRemoveWrongTap">
-        <view class="footer-action-icon">
-          <text class="footer-action-symbol">×</text>
-        </view>
+      <view class="footer-action remove-wrong-btn" wx:if="{{wrongMode}}" hover-class="footer-action-hover" hover-start-time="0" hover-stay-time="70" bindtap="onRemoveWrongTap">
+        <text class="footer-action-glyph">×</text>
         <text>移除</text>
       </view>
     </view>
     <view class="footer-right">
-      <view class="nav-btn" bindtap="onNextTap" wx:if="{{currentIndex < totalCount - 1}}">下一题</view>
-      <view class="nav-btn submit" bindtap="onSubmitTap" wx:else>交卷</view>
+      <view class="nav-btn primary" hover-class="nav-btn-primary-hover" hover-start-time="0" hover-stay-time="70" bindtap="onNextTap" wx:if="{{currentIndex < totalCount - 1}}">下一题</view>
+      <view class="nav-btn primary" hover-class="nav-btn-primary-hover" hover-start-time="0" hover-stay-time="70" bindtap="onSubmitTap" wx:else>交卷</view>
     </view>
   </view>
 </view>

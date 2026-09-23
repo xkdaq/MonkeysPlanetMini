@@ -2,7 +2,7 @@
 
 .settings-container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #e8f5e9 0%, #f5f5f5 40%);
+  background: var(--bg-color);
   padding: 60rpx 40rpx;
   display: flex;
   flex-direction: column;
@@ -26,13 +26,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 32rpx rgba(7, 193, 96, 0.15);
+  border: 2rpx solid var(--border-color);
   margin-bottom: 30rpx;
   padding: 20rpx;
 }
 
 .logo-wrap:active {
-  transform: scale(0.95);
+  opacity: 0.7;
 }
 
 .logo {
@@ -43,13 +43,13 @@
 .app-name {
   font-size: 40rpx;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 12rpx;
 }
 
 .app-slogan {
   font-size: 26rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* 信息卡片 */
@@ -58,7 +58,7 @@
   background: #fff;
   border-radius: 20rpx;
   padding: 20rpx 0;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid var(--border-color);
   margin-bottom: 60rpx;
 }
 
@@ -71,18 +71,18 @@
 
 .info-label {
   font-size: 30rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .info-value {
   font-size: 30rpx;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .info-divider {
   height: 1rpx;
-  background: #f0f0f0;
+  background: var(--border-color);
   margin: 0 40rpx;
 }
 
@@ -94,5 +94,5 @@
 
 .copyright {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }

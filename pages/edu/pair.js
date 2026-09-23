@@ -64,7 +64,14 @@ Page({
   },
 
   onHide() {
+    // 停表：离开页面 / 切到后台的时间不该算进「用时」
+    this.stopClock()
     this.save()
+  },
+
+  onShow() {
+    // 回到页面继续计时；已经结算完的不再走表
+    if (!this.data.showResult) this.startClock()
   },
 
   // ===== 存档 =====
@@ -105,17 +112,26 @@ Page({
     if (!raw) return
 
     try {
-      this.data.unlocked = Math.min(raw.unlocked || 0, LEVELS.length - 1)
-      this.data.lvIndex = Math.min(raw.lvIndex || 0, this.data.unlocked)
-      this.data.score = raw.score || 0
-      this.data.combo = raw.combo || 0
-      this.data.cleared = raw.cleared || 0
+      const unlocked = Math.min(raw.unlocked || 0, LEVELS.length - 1)
       this._hits = raw.hits || 0
       this._tries = raw.tries || 0
       this._secs = raw.secs || 0
       this._wrongSet = Array.isArray(raw.wrongSet) ? raw.wrongSet : []
-      this.data.vibrate = raw.vibrate !== false
-      this.data.reveal = raw.reveal === true
+
+      // 这些值都绑到了 WXML 上，必须走 setData——
+      // 只改 this.data 视图层收不到，会出现「开关显示关着、行为却是开的」
+      this.setData({
+        unlocked,
+        lvIndex: Math.min(raw.lvIndex || 0, unlocked),
+        score: raw.score || 0,
+        combo: raw.combo || 0,
+        cleared: raw.cleared || 0,
+        vibrate: raw.vibrate !== false,
+        reveal: raw.reveal === true,
+        timeText: this.fmt(this._secs),
+        wrongCount: this._wrongSet.length,
+        hasWrong: this._wrongSet.length > 0
+      })
     } catch (e) {
       console.error('[pair] 读档失败:', e)
     }
@@ -181,8 +197,11 @@ Page({
       showResult: false
     })
 
+    this.reorder()
     this.paint()
     this.save()
+    // 结算时会停表，之后换关必须重新走表，否则「用时」会一直卡住
+    this.startClock()
 
     reportVisit({
       eventType: isWrong ? 'pair_wrong_practice' : 'pair_level_start',
@@ -218,7 +237,20 @@ Page({
     return r
   },
 
-  // 重建两栏卡片
+  /**
+   * 重算两栏的展示顺序。
+   * 只在「开新关」和点「重排」时调用——paint() 每次点击都会跑，
+   * 如果把洗牌放在 paint 里，点一下卡片顺序就全乱了。
+   */
+  reorder() {
+    const cards = this._cards || []
+    this._order = {
+      q: this.shuffle(cards.filter((c) => c.type === 'q')).map((c) => c.id),
+      a: this.shuffle(cards.filter((c) => c.type === 'a')).map((c) => c.id)
+    }
+  },
+
+  // 重建两栏卡片（按已固定的顺序渲染，不改变排列）
   paint() {
     const cards = this._cards || []
     const map = (c) => ({
@@ -230,9 +262,34 @@ Page({
       good: c.good === true,
       hint: c.hint === true
     })
+
+    if (!this._order) this.reorder()
+
+    const pick = (type) => {
+      const byId = {}
+      let count = 0
+      cards.forEach((c) => {
+        if (c.type === type) {
+          byId[c.id] = c
+          count++
+        }
+      })
+      const ordered = (this._order[type] || []).map((id) => byId[id]).filter(Boolean)
+      // 兜底：顺序表和当前卡片对不上（换关等），把缺的补到末尾并回写顺序
+      if (ordered.length !== count) {
+        const seen = {}
+        ordered.forEach((c) => { seen[c.id] = 1 })
+        cards.forEach((c) => {
+          if (c.type === type && !seen[c.id]) ordered.push(c)
+        })
+        this._order[type] = ordered.map((c) => c.id)
+      }
+      return ordered.map(map)
+    }
+
     this.setData({
-      qCards: this.shuffle(cards.filter((c) => c.type === 'q')).map(map),
-      aCards: this.shuffle(cards.filter((c) => c.type === 'a')).map(map)
+      qCards: pick('q'),
+      aCards: pick('a')
     })
     this.syncStats()
   },
@@ -348,13 +405,16 @@ Page({
 
     if (this.data.reveal) {
       const right = (this._cards || []).find((c) => c.ref === qCard.ref && c.type !== qCard.type)
-      wx.showModal({
-        title: '搭配错误',
-        content: `「${qCard.text}」\n正确答案：${right ? right.text : aCard.text}`,
-        showCancel: false,
-        confirmText: '知道了'
+      // 高亮正确项，和 toast 同时出现；题干就在刚点的卡片上，不必在提示里重复
+      if (right) {
+        right.hint = true
+        this.paint()
+      }
+      wx.showToast({
+        title: `正确答案：${right ? right.text : aCard.text}`,
+        icon: 'none',
+        duration: 1600
       })
-      if (right) right.hint = true
     } else {
       wx.showToast({ title: '不匹配', icon: 'none', duration: 1000 })
     }
@@ -470,6 +530,7 @@ Page({
     }
     this.clearHint()
     this.buzz('light')
+    this.reorder()
     this.paint()
   },
 
@@ -510,10 +571,17 @@ Page({
 
   // ===== 开关 =====
   onToggleReveal() {
-    this.data.reveal = !this.data.reveal
-    this.setData({ reveal: this.data.reveal })
+    const reveal = !this.data.reveal
+    // 关掉时把上一次公布的答案高亮一并清掉，否则会留在屏幕上直到下次点击
+    if (!reveal) {
+      this.clearHint()
+      this.setData({ reveal })
+      this.paint()
+    } else {
+      this.setData({ reveal })
+    }
     wx.showToast({
-      title: this.data.reveal ? '已开启：错误时公布正确答案' : '已关闭：错误只提示不匹配',
+      title: reveal ? '已开启：错误时公布正确答案' : '已关闭：错误只提示不匹配',
       icon: 'none',
       duration: 1800
     })
@@ -521,9 +589,9 @@ Page({
   },
 
   onToggleVibrate() {
-    this.data.vibrate = !this.data.vibrate
-    this.setData({ vibrate: this.data.vibrate })
-    if (this.data.vibrate) this.buzz('light')
+    const vibrate = !this.data.vibrate
+    this.setData({ vibrate })
+    if (vibrate) this.buzz('light')
     this.save()
   },
 
@@ -561,5 +629,27 @@ Page({
     this.setData({ showLevelSheet: false })
     if (idx === this.data.lvIndex) return
     this.startLevel(idx, true)
+  },
+
+  // 分享标题：带上当前关卡名（错题重练是个人状态，不外露）
+  shareTitle() {
+    const name = this.data.levelName
+    return this.data.lvIndex !== WRONG && name
+      ? `帽子题连连看 · ${name}`
+      : '帽子题连连看 · 教育学高频考点配对'
+  },
+
+  /**
+   * 分享好友
+   */
+  onShareAppMessage() {
+    return { title: this.shareTitle() }
+  },
+
+  /**
+   * 分享朋友圈
+   */
+  onShareTimeline() {
+    return { title: this.shareTitle() }
   }
 })

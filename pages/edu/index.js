@@ -71,5 +71,19 @@ Page({
 
   goPair() {
     wx.navigateTo({ url: '/pages/edu/pair' })
+  },
+
+  /**
+   * 分享好友
+   */
+  onShareAppMessage() {
+    return { title: '教育学 · 趣味背诵｜333 教育综合，边玩边记' }
+  },
+
+  /**
+   * 分享朋友圈
+   */
+  onShareTimeline() {
+    return { title: '教育学 · 趣味背诵｜333 教育综合，边玩边记' }
   }
 })

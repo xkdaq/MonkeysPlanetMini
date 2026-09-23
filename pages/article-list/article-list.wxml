@@ -5,14 +5,14 @@
       <image class="search-icon-img" src="/images/search.png" mode="aspectFit" />
     </view>
     <input class="search-input" placeholder="{{placeholder}}" bindinput="onInputChange" value="{{keywords}}" />
-    <view class="search-btn" bindtap="onSearch">搜索</view>
-    <view wx:if="{{keywords}}" class="clear-btn" bindtap="onClearSearch">清除</view>
+    <view class="search-btn" hover-class="tap-hover" hover-start-time="0" hover-stay-time="70" bindtap="onSearch">搜索</view>
+    <view wx:if="{{keywords}}" class="clear-btn" hover-class="tap-hover" hover-start-time="0" hover-stay-time="70" bindtap="onClearSearch">清除</view>
   </view>
 
   <!-- 列表 -->
   <view class="list">
     <block wx:for="{{list}}" wx:key="id">
-      <view class="list-item" bindtap="onItemTap" data-item="{{item}}">
+      <view class="list-item" hover-class="tap-hover" hover-start-time="0" hover-stay-time="70" bindtap="onItemTap" data-item="{{item}}">
         <view class="title-box">
           <view wx:if="{{item.isTop == 1}}" class="top-tag">置顶</view>
           <text class="title">{{item.title}}</text>

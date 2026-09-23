@@ -1,65 +1,40 @@
-<!--pages/edu/edu.wxml-->
+<!--pages/edu/index.wxml-->
 <view class="edu-page">
   <!-- 头部 -->
   <view class="edu-header">
-    <view class="edu-header-main">
-      <view class="edu-seal">教</view>
-      <view class="edu-header-txt">
-        <view class="edu-title">教育学 · 趣味背诵</view>
-        <view class="edu-sub">333 教育综合 · 边玩边记</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 进度概览 -->
-  <view class="stat-card">
-    <view class="stat-item">
-      <view class="stat-value">{{pairLevel}}<text class="stat-unit">/12</text></view>
-      <view class="stat-label">连连看关卡</view>
-    </view>
-    <view class="stat-item">
-      <view class="stat-value">{{pairCleared}}</view>
-      <view class="stat-label">已消除组</view>
-    </view>
-    <view class="stat-item">
-      <view class="stat-value warn">{{pairWrong}}</view>
-      <view class="stat-label">待复习错题</view>
-    </view>
-    <view class="stat-item">
-      <view class="stat-value">{{wheelDrawn}}</view>
-      <view class="stat-label">转盘抽题</view>
-    </view>
+    <view class="edu-title">教育学 · 趣味背诵</view>
+    <view class="edu-sub">333 教育综合 · 边玩边记</view>
   </view>
 
   <!-- 玩法入口 -->
-  <view class="section-title">背诵玩法</view>
-
-  <view class="game-card" bindtap="goWheel">
-    <view class="game-icon wheel">转</view>
+  <view class="game-card" hover-class="game-card-hover" hover-start-time="0" hover-stay-time="70" bindtap="goWheel">
+    <view class="game-icon">转</view>
     <view class="game-info">
       <view class="game-name">抽题大转盘</view>
       <view class="game-desc">选择题库随机抽题，先思考再看解析，支持不重复抽题与抽题历史</view>
       <view class="game-meta">
-        <text class="meta-tag">6 个题库</text>
-        <text class="meta-tag">已抽 {{wheelDrawn}} 次</text>
+        <text class="meta-tag">{{wheelBankCount > 0 ? wheelBankCount + ' 个题库' : '多个题库'}}</text>
+        <text class="meta-tag is-green">已抽 {{wheelDrawn}} 次</text>
       </view>
     </view>
     <text class="game-arrow">›</text>
   </view>
 
-  <view class="game-card" bindtap="goPair">
-    <view class="game-icon pair">连</view>
+  <view class="game-card" hover-class="game-card-hover" hover-start-time="0" hover-stay-time="70" bindtap="goPair">
+    <view class="game-icon is-warm">连</view>
     <view class="game-info">
       <view class="game-name">帽子题连连看</view>
       <view class="game-desc">中外教育史 96 组高频考点，12 关闯关配对，错题自动进错题本</view>
       <view class="game-meta">
-        <text class="meta-tag">12 关 · 96 组</text>
-        <text class="meta-tag" wx:if="{{pairWrong > 0}}">错题 {{pairWrong}}</text>
+        <text class="meta-tag">第 {{pairLevel || 1}} / 12 关 · 已消除 {{pairCleared}} 组</text>
+        <text class="meta-tag is-warm" wx:if="{{pairWrong > 0}}">错题 {{pairWrong}}</text>
         <text class="meta-tag" wx:else>离线可玩</text>
       </view>
     </view>
     <text class="game-arrow">›</text>
   </view>
 
-  <view class="edu-tip">进度保存在本机，换设备不互通；后续会继续补充闪卡、填空等玩法。</view>
+  <view class="more-box">更多玩法敬请期待</view>
+
+  <view class="edu-tip">进度保存在本机，换设备不互通。</view>
 </view>

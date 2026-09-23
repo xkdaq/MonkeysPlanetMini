@@ -95,9 +95,7 @@ Page({
     }
 
     try {
-      if (refresh) {
-        wx.showLoading({ title: '加载中...', mask: true })
-      }
+      // 不再用全屏蒙层挡住交互，页面内已有 loading 态
       this.setData({ isLoading: true })
 
       const res = await getMaterialList(pageNum, pageSize, '', keywords)
@@ -112,7 +110,6 @@ Page({
     } catch (error) {
       console.error('加载失败:', error)
     } finally {
-      wx.hideLoading()
       wx.stopPullDownRefresh()
       this.setData({ isLoading: false })
     }

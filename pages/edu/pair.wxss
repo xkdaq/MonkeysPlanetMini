@@ -14,7 +14,7 @@
   background: #ffffff;
   border-radius: 16rpx;
   padding: 20rpx 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid var(--border-color);
 }
 
 .level-info {
@@ -26,14 +26,14 @@
   display: block;
   font-size: 26rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
 }
 
 .level-name {
   display: block;
   margin-top: 6rpx;
   font-size: 22rpx;
-  color: #07c160;
+  color: var(--primary-color);
 }
 
 .level-pick {
@@ -41,9 +41,9 @@
   margin-left: 20rpx;
   padding: 10rpx 20rpx;
   border-radius: 30rpx;
-  border: 2rpx solid #e8e8e8;
+  border: 2rpx solid var(--border-color);
   font-size: 24rpx;
-  color: #666666;
+  color: var(--text-secondary);
 }
 
 .progress-row {
@@ -56,14 +56,14 @@
   flex: 1;
   height: 12rpx;
   border-radius: 6rpx;
-  background: #eeeeee;
+  background: var(--border-color);
   overflow: hidden;
 }
 
 .fill {
   height: 100%;
   border-radius: 6rpx;
-  background: #07c160;
+  background: var(--primary-color);
   transition: width 0.4s ease;
 }
 
@@ -71,7 +71,7 @@
   flex: none;
   margin-left: 20rpx;
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-tertiary);
 }
 
 /* 统计 */
@@ -80,7 +80,7 @@
   background: #ffffff;
   border-radius: 16rpx;
   padding: 20rpx 0;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid var(--border-color);
 }
 
 .stat {
@@ -96,27 +96,27 @@
   top: 16%;
   height: 68%;
   width: 2rpx;
-  background: #f0f0f0;
+  background: var(--border-color);
 }
 
 .stat .v {
   display: block;
   font-size: 34rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   line-height: 1.2;
 }
 
 .stat .v.score {
-  color: #faad14;
+  color: var(--warning-color);
 }
 
 .stat .v.combo {
-  color: #07c160;
+  color: var(--primary-color);
 }
 
 .stat .v.cleared {
-  color: #07c160;
+  color: var(--primary-color);
 }
 
 .stat .v.time {
@@ -127,7 +127,7 @@
   display: block;
   margin-top: 6rpx;
   font-size: 20rpx;
-  color: #999999;
+  color: var(--text-tertiary);
 }
 
 /* 工具 */
@@ -142,14 +142,14 @@
   margin-right: 16rpx;
   border-radius: 30rpx;
   background: #ffffff;
-  border: 2rpx solid #e8e8e8;
+  border: 2rpx solid var(--border-color);
   font-size: 24rpx;
-  color: #666666;
+  color: var(--text-secondary);
 }
 
 .tool.on {
-  background: #07c160;
-  border-color: #07c160;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
   color: #ffffff;
 }
 
@@ -165,7 +165,7 @@
   background: #ffffff;
   border-radius: 16rpx;
   padding: 16rpx 14rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid var(--border-color);
 }
 
 .col-head {
@@ -173,10 +173,10 @@
   align-items: center;
   font-size: 24rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   padding-bottom: 12rpx;
   margin-bottom: 12rpx;
-  border-bottom: 2rpx solid #f0f0f0;
+  border-bottom: 2rpx solid var(--border-color);
 }
 
 .dot {
@@ -187,11 +187,11 @@
 }
 
 .col.q .dot {
-  background: #2563eb;
+  background: var(--text-deco);
 }
 
 .col.a .dot {
-  background: #11b981;
+  background: var(--primary-deep);
 }
 
 .card {
@@ -204,31 +204,27 @@
   border: 2rpx solid transparent;
   font-size: 22rpx;
   line-height: 1.5;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  border: 2rpx solid var(--border-color);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.card.q {
-  background: #f0f6ff;
-  border-color: #c9ddfd;
-  color: #1d4ed8;
-}
-
+.card.q,
 .card.a {
-  background: #ecfdf3;
-  border-color: #b7e4cd;
-  color: #067647;
+  background: var(--white);
+  border-color: var(--border-color);
+  color: var(--text-primary);
 }
 
+/* 选中态才上绿 */
 .card.sel {
-  border-color: #07c160;
-  transform: translateY(-2rpx);
-  box-shadow: 0 0 0 4rpx rgba(7, 193, 96, 0.18);
+  background: var(--primary-light);
+  border-color: var(--primary-color);
+  color: var(--primary-deep);
 }
 
 .card.bad {
   animation: shake 0.42s ease;
-  border-color: #ff4d4f !important;
+  border-color: var(--danger-text) !important;
 }
 
 .card.good {
@@ -263,55 +259,83 @@
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 0 3rpx #faad14; }
-  50% { box-shadow: 0 0 0 6rpx #faad14; }
+  0%, 100% { box-shadow: 0 0 0 3rpx var(--warning-color); }
+  50% { box-shadow: 0 0 0 6rpx var(--warning-color); }
 }
 
 /* 操作 */
 .act-row {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  gap: 16rpx;
   margin-top: 24rpx;
 }
 
+/* 三个操作按钮等宽三等分（设计稿 5C：等高胶囊、同字号） */
+.act-row .btn {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  height: 76rpx;
+}
+
 .btn {
-  padding: 16rpx 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28rpx;
+  height: 76rpx;
   margin: 0 10rpx 12rpx;
-  border-radius: 40rpx;
-  font-size: 26rpx;
-  background: #ffffff;
-  border: 2rpx solid #e8e8e8;
-  color: #666666;
+  border-radius: 38rpx;
+  font-size: 25rpx;
+  font-weight: 600;
+  line-height: 1;
+  background: var(--white);
+  border: 2rpx solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* 按钮上的附注（免费 / -20），比主文案小一号 */
+.btn-sub {
+  margin-left: 8rpx;
+  font-size: 20rpx;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.btn-hover {
+  opacity: 0.6;
 }
 
 .btn.primary {
-  background: #07c160;
-  border-color: #07c160;
-  color: #ffffff;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white);
 }
 
 .btn.ghost {
-  color: #07c160;
-  border-color: #b7e4cd;
+  color: var(--primary-deep);
+  border-color: var(--primary-line);
 }
 
+/* 提示要扣分，用棕色系提醒 */
 .btn.gold {
-  background: #fffaf0;
-  border-color: #f2e3c2;
-  color: #a1651a;
+  background: var(--warning-light);
+  border-color: var(--warning-line);
+  color: var(--warning-color);
 }
 
-.btn.warn {
-  color: #ff4d4f;
-  border-color: rgba(255, 77, 79, 0.32);
+/* 重新开始会清空进度，保持描边红、不做实心，避免误触 */
+.btn.danger {
+  color: var(--danger-text);
+  border-color: var(--danger-line);
 }
 
 .tip {
   margin-top: 20rpx;
   text-align: center;
   font-size: 22rpx;
-  color: #bbbbbb;
+  color: var(--text-deco);
   line-height: 1.7;
 }
 
@@ -336,6 +360,7 @@
   border-radius: 24rpx 24rpx 0 0;
   padding: 30rpx 24rpx calc(30rpx + env(safe-area-inset-bottom));
   animation: slideUp 0.25s cubic-bezier(0.25, 0.85, 0.3, 1);
+  border: 2rpx solid var(--border-color);
 }
 
 @keyframes slideUp {
@@ -347,7 +372,7 @@
   text-align: center;
   font-size: 30rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 20rpx;
 }
 
@@ -360,14 +385,14 @@
   align-items: center;
   padding: 20rpx;
   border-radius: 12rpx;
-  background: #fafafa;
+  background: var(--bg-color);
   border: 2rpx solid transparent;
   margin-bottom: 8rpx;
 }
 
 .lvl-opt.active {
-  background: #e8f5e9;
-  border-color: #07c160;
+  background: var(--primary-light);
+  border-color: var(--primary-color);
 }
 
 .lvl-opt.locked {
@@ -379,8 +404,8 @@
   width: 44rpx;
   height: 44rpx;
   border-radius: 10rpx;
-  background: #eeeeee;
-  color: #999999;
+  background: var(--border-color);
+  color: var(--text-tertiary);
   font-size: 22rpx;
   display: flex;
   align-items: center;
@@ -388,7 +413,7 @@
 }
 
 .lvl-opt.active .opt-idx {
-  background: #07c160;
+  background: var(--primary-color);
   color: #ffffff;
 }
 
@@ -397,7 +422,7 @@
   min-width: 0;
   margin-left: 16rpx;
   font-size: 26rpx;
-  color: #333333;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -407,15 +432,15 @@
   flex: none;
   margin-left: 12rpx;
   font-size: 22rpx;
-  color: #999999;
+  color: var(--text-tertiary);
 }
 
 .sheet-close {
   margin-top: 20rpx;
   height: 80rpx;
   border-radius: 40rpx;
-  border: 2rpx solid #e8e8e8;
-  color: #999999;
+  border: 2rpx solid var(--border-color);
+  color: var(--text-tertiary);
   font-size: 28rpx;
   display: flex;
   align-items: center;
@@ -433,10 +458,10 @@
   max-width: 600rpx;
   background: #ffffff;
   border-radius: 24rpx;
-  border-top: 6rpx solid #07c160;
+  border-top: 6rpx solid var(--primary-color);
   padding: 46rpx 36rpx 32rpx;
   text-align: center;
-  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.18);
+  border: 2rpx solid var(--border-color);
   animation: rise 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
 }
 
@@ -450,7 +475,7 @@
   height: 100rpx;
   margin: 0 auto 20rpx;
   border-radius: 50%;
-  background: #07c160;
+  background: var(--primary-color);
   color: #ffffff;
   font-size: 44rpx;
   display: flex;
@@ -461,14 +486,14 @@
 .r-title {
   font-size: 36rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
 }
 
 .r-lead {
   margin-top: 12rpx;
   font-size: 24rpx;
   line-height: 1.7;
-  color: #999999;
+  color: var(--text-tertiary);
 }
 
 .tally {
@@ -487,14 +512,14 @@
   display: block;
   font-size: 32rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
 }
 
 .t-l {
   display: block;
   margin-top: 6rpx;
   font-size: 20rpx;
-  color: #999999;
+  color: var(--text-tertiary);
 }
 
 .r-row {

@@ -1,6 +1,8 @@
 <view class="wangpan-page">
+  <!-- 搜索 + 两级筛选：白底吸顶，滚动时始终可改筛选 -->
+  <view class="filter-header">
   <!-- 搜索框 -->
-  <view class="search-box" bindtap="goToSearch">
+  <view class="search-box" hover-class="search-box-hover" hover-start-time="0" hover-stay-time="70" bindtap="goToSearch">
     <view class="search-icon-wrap">
       <image class="search-icon-img" src="/images/search.png" mode="aspectFit" />
     </view>
@@ -28,11 +30,12 @@
             bindtap="onCategoryTap" data-id="{{item.id}}">{{item.name}}</view>
     </view>
   </scroll-view>
+  </view>
 
   <!-- 单列横向卡片列表 -->
   <view class="content-list">
     <block wx:for="{{list}}" wx:key="id">
-      <view class="content-card" bindtap="onItemTap" data-item="{{item}}">
+      <view class="content-card" hover-class="content-card-hover" hover-start-time="0" hover-stay-time="70" bindtap="onItemTap" data-item="{{item}}">
         <!-- 封面图 -->
         <image wx:if="{{item.coverImage}}" class="content-cover" src="{{item.coverImage}}" mode="aspectFill" />
         <!-- 内容区 -->
@@ -56,6 +59,7 @@
   </view>
 
   <!-- 加载状态 -->
+  <view wx:if="{{isLoading && list.length === 0}}" class="loading">加载中...</view>
   <view wx:if="{{loadingMore}}" class="loading">加载中...</view>
   <view wx:if="{{!hasMore && list.length > 0}}" class="no-more">没有更多了</view>
 

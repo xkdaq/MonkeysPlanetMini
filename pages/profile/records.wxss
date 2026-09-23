@@ -1,118 +1,142 @@
 /* pages/profile/records.wxss */
 
 .records-container {
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
   min-height: 100vh;
+  padding: 32rpx 32rpx 40rpx;
+  box-sizing: border-box;
 }
 
-/* 统计卡片 */
+/* 统计：一张描边卡，不再整块上色 */
 .stats-card {
   display: flex;
-  justify-content: space-around;
-  background: linear-gradient(135deg, #07c160 0%, #05a050 100%);
-  padding: 40rpx 20rpx;
+  background: var(--white);
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 32rpx 0;
 }
 
 .stats-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #fff;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.stats-item + .stats-item {
+  border-left: 2rpx solid var(--border-color);
 }
 
 .stats-num {
   font-size: 40rpx;
-  font-weight: bold;
-  margin-bottom: 8rpx;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+  padding: 0 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stats-num.is-accent {
+  color: var(--primary-deep);
 }
 
 .stats-label {
-  font-size: 24rpx;
-  opacity: 0.9;
+  margin-top: 10rpx;
+  font-size: 21rpx;
+  color: var(--text-tertiary);
 }
 
 /* 记录列表 */
 .records-list {
-  padding: 20rpx;
+  padding-top: 36rpx;
 }
 
-.section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20rpx;
-  padding-left: 10rpx;
+.list-title {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 0 4rpx 20rpx;
 }
 
 .record-item {
-  background-color: #fff;
-  border-radius: 12rpx;
-  padding: 30rpx;
+  background-color: var(--white);
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 28rpx 30rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.record-item-hover {
+  background: var(--bg-color);
 }
 
 .record-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16rpx;
 }
 
+/* 练习类型：描边标签 */
 .record-type {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
+  font-size: 21rpx;
+  line-height: 1.4;
+  color: var(--primary-deep);
+  background: var(--primary-light);
+  border: 2rpx solid var(--primary-line);
+  padding: 4rpx 16rpx;
+  border-radius: 14rpx;
 }
 
 .record-time {
-  font-size: 24rpx;
-  color: #999;
-}
-
-.record-body {
-  margin-bottom: 16rpx;
+  font-size: 21rpx;
+  color: var(--text-tertiary);
 }
 
 .record-bank {
+  margin-top: 20rpx;
   font-size: 28rpx;
-  color: #666;
-  margin-bottom: 12rpx;
-  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .record-stats {
+  margin-top: 18rpx;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 
 .record-count {
-  font-size: 28rpx;
-  color: #666;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  margin-right: 28rpx;
 }
 
+/* 正确率色标：≥80 绿 / ≥60 棕 / 更低红 */
 .record-accuracy {
-  font-size: 36rpx;
-  font-weight: bold;
+  font-size: 30rpx;
+  font-weight: 600;
 }
 
-.record-footer {
-  border-top: 1rpx solid #f0f0f0;
-  padding-top: 16rpx;
-}
+.record-accuracy.is-good { color: var(--primary-deep); }
+.record-accuracy.is-mid  { color: var(--warning-color); }
+.record-accuracy.is-low  { color: var(--danger-text); }
 
 .record-duration {
-  font-size: 24rpx;
-  color: #999;
+  margin-left: auto;
+  font-size: 21rpx;
+  color: var(--text-tertiary);
 }
 
 /* 加载更多 */
 .load-more, .no-more {
   text-align: center;
   padding: 30rpx;
-  color: #999;
-  font-size: 28rpx;
+  color: var(--text-tertiary);
+  font-size: 25rpx;
 }
 
 /* 空状态 */
@@ -124,19 +148,19 @@
 }
 
 .empty-icon {
-  width: 200rpx;
-  height: 200rpx;
+  width: 180rpx;
+  height: 180rpx;
   margin-bottom: 30rpx;
   opacity: 0.5;
 }
 
 .empty-text {
-  font-size: 32rpx;
-  color: #999;
-  margin-bottom: 16rpx;
+  font-size: 28rpx;
+  color: var(--text-tertiary);
+  margin-bottom: 12rpx;
 }
 
 .empty-tip {
-  font-size: 28rpx;
-  color: #bbb;
+  font-size: 25rpx;
+  color: var(--text-deco);
 }

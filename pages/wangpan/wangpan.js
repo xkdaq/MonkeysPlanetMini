@@ -24,8 +24,7 @@ Page({
     // 刷新后台总开关（不阻塞页面加载）
     fetchGlobalConfig()
 
-    await this.loadSubjects()
-    await this.loadList(true)
+    await Promise.all([this.loadSubjects(), this.loadList(true)])
 
     // 初始化激励视频广告实例
     if (wx.createRewardedVideoAd) {
@@ -59,9 +58,11 @@ Page({
 
   async onPullDownRefresh() {
     this.setData({ pageNum: 1, hasMore: true })
-    await this.loadSubjects()
-    await this.loadList(true)
-    wx.stopPullDownRefresh()
+    try {
+      await Promise.all([this.loadSubjects(), this.loadList(true)])
+    } finally {
+      wx.stopPullDownRefresh()
+    }
   },
 
   async onReachBottom() {
@@ -93,16 +94,20 @@ Page({
       pageNum = 1
     }
 
+    // 请求序号：快速连点筛选时，丢弃已经过期的响应，避免旧数据覆盖新列表
+    const seq = (this._reqSeq || 0) + 1
+    this._reqSeq = seq
+
     try {
-      if (refresh) {
-        wx.showLoading({ title: '加载中...', mask: true })
-      }
       this.setData({ isLoading: true })
 
       const res = await getMaterialList(pageNum, pageSize, {
         subjectId: activeSubjectId,
         categoryId: activeCategoryId
       })
+
+      // 过期响应直接丢弃
+      if (seq !== this._reqSeq) return
 
       const newList = refresh ? res.data : list.concat(res.data)
       const hasMore = res.data.length >= pageSize
@@ -115,14 +120,17 @@ Page({
     } catch (error) {
       console.error('加载失败:', error)
     } finally {
-      wx.hideLoading()
-      wx.stopPullDownRefresh()
-      this.setData({ isLoading: false })
+      if (seq === this._reqSeq) {
+        this.setData({ isLoading: false })
+      }
     }
   },
 
   async onSubjectTap(e) {
     const subjectId = e.currentTarget.dataset.id || ''
+    // 点当前已选中的科目不重复请求
+    if (subjectId === this.data.activeSubjectId) return
+
     this.setData({
       activeSubjectId: subjectId,
       activeCategoryId: '',
@@ -130,12 +138,17 @@ Page({
       hasMore: true,
       list: []
     })
-    await this.loadCategories(subjectId)
-    await this.loadList(true)
+    // 分类和列表互不依赖，并行发出，切换等待时间减半
+    await Promise.all([
+      this.loadCategories(subjectId),
+      this.loadList(true)
+    ])
   },
 
   async onCategoryTap(e) {
     const categoryId = e.currentTarget.dataset.id || ''
+    if (categoryId === this.data.activeCategoryId) return
+
     this.setData({
       activeCategoryId: categoryId,
       pageNum: 1,

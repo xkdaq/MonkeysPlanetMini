@@ -15,6 +15,7 @@ Page({
     pageSize: 12,
     hasMore: true,
     loadingMore: false,
+    isLoading: false,
     pendingId: null,
     pendingType: null
   },
@@ -89,14 +90,20 @@ Page({
       pageNum = 1
     }
 
+    // 请求序号：连续搜索时丢弃过期响应，避免旧关键词的结果覆盖新结果
+    const seq = (this._reqSeq || 0) + 1
+    this._reqSeq = seq
+
     try {
-      wx.showLoading({ title: '加载中...', mask: true })
+      this.setData({ isLoading: true })
       let res
       if (from === 'wangpan') {
         res = await getMaterialList(pageNum, pageSize, '', keywords)
       } else {
         res = await getSearchList(pageNum, pageSize, keywords)
       }
+
+      if (seq !== this._reqSeq) return
 
       const newList = refresh ? res.data : list.concat(res.data)
       const hasMore = res.data.length >= pageSize
@@ -109,7 +116,9 @@ Page({
     } catch (error) {
       console.error('加载失败:', error)
     } finally {
-      wx.hideLoading()
+      if (seq === this._reqSeq) {
+        this.setData({ isLoading: false })
+      }
       wx.stopPullDownRefresh()
     }
   },

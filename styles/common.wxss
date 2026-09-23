@@ -27,13 +27,13 @@
   overflow: hidden;
 }
 
-/* 阴影 */
+/* 描边（4B 规范：不用阴影表达层级，用 1px 描边） */
 .shadow {
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  border: 2rpx solid var(--border-color);
 }
 
 .shadow-lg {
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+  border: 2rpx solid var(--border-color);
 }
 
 /* 圆角 */

@@ -1,6 +1,6 @@
 .index-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
   padding-bottom: 30rpx;
 }
 
@@ -12,7 +12,7 @@
   margin: 20rpx;
   padding: 20rpx 24rpx;
   border-radius: 40rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid var(--border-color);
 }
 
 .search-icon-wrap {
@@ -32,7 +32,7 @@
 .search-input {
   flex: 1;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* 轮播图 */
@@ -61,6 +61,7 @@
   margin: 20rpx;
   padding: 20rpx 24rpx;
   border-radius: 16rpx;
+  border: 2rpx solid var(--border-color);
 }
 
 .notice-icon-img {
@@ -82,7 +83,7 @@
 
 .notice-text {
   font-size: 28rpx;
-  color: #333;
+  color: var(--text-primary);
   line-height: 44rpx;
 }
 
@@ -92,6 +93,7 @@
   margin: 20rpx;
   border-radius: 16rpx;
   padding: 24rpx;
+  border: 2rpx solid var(--border-color);
 }
 
 .section-header {
@@ -109,7 +111,7 @@
 .section-title-line {
   width: 6rpx;
   height: 32rpx;
-  background: linear-gradient(180deg, #07c160 0%, #05a050 100%);
+  background: var(--primary-color);
   border-radius: 3rpx;
   margin-right: 16rpx;
 }
@@ -117,14 +119,14 @@
 .section-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .section-more {
   display: flex;
   align-items: center;
   font-size: 26rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .section-more .arrow {
@@ -139,7 +141,7 @@
 
 .list-item {
   padding: 24rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--border-color);
 }
 
 .list-item:last-child {
@@ -165,7 +167,7 @@
 
 .title {
   font-size: 30rpx;
-  color: #333;
+  color: var(--text-primary);
   line-height: 1.5;
   flex: 1;
 }
@@ -178,7 +180,7 @@
 
 .date {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* 分类标签 */
@@ -194,29 +196,15 @@
   border-radius: 8rpx;
 }
 
-.tag-0 {
-  background-color: #e6f7f0;
-  color: #07c160;
-}
-
-.tag-1 {
-  background-color: #fff2e8;
-  color: #ff7a45;
-}
-
-.tag-2 {
-  background-color: #e6f4ff;
-  color: #1890ff;
-}
-
-.tag-3 {
-  background-color: #f6ffed;
-  color: #52c41a;
-}
-
+/* 标签一律描边式，不再五色浅底 */
+.tag-0,
+.tag-1,
+.tag-2,
+.tag-3,
 .tag-4 {
-  background-color: #fff0f6;
-  color: #eb2f96;
+  background-color: transparent;
+  border: 2rpx solid var(--primary-color);
+  color: var(--primary-deep);
 }
 
 /* 空状态 */
@@ -227,5 +215,5 @@
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }

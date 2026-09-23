@@ -7,20 +7,34 @@ Page({
     userInfo: null,
     isLogin: false,
     // 审核模式：隐藏绑定手机号/修改密码入口
-    reviewMode: false
+    reviewMode: false,
+    // 学习概览（先用本地缓存占位，避免切到本 tab 时数字跳动）
+    stats: {
+      total: 0,
+      totalQuestions: 0,
+      totalDurationText: '0分钟'
+    }
   },
 
   onLoad() {
-    this.setData({ reviewMode: isReviewMode() })
+    const cachedStats = wx.getStorageSync('profileStats')
+    const patch = { reviewMode: isReviewMode() }
+    if (cachedStats) patch.stats = cachedStats
+    this.setData(patch)
     this.checkLoginStatus()
   },
 
   onShow() {
-    this.setData({ reviewMode: isReviewMode() })
+    // 只在值真的变化时 setData，避免每次切 tab 都触发整页重渲染
+    const reviewMode = isReviewMode()
+    if (reviewMode !== this.data.reviewMode) {
+      this.setData({ reviewMode })
+    }
     this.checkLoginStatus()
     // 每次显示页面时刷新用户信息
     if (this.data.isLogin) {
       this.fetchUserInfo()
+      this.fetchStats()
     }
   },
 
@@ -28,17 +42,40 @@ Page({
   checkLoginStatus() {
     const token = wx.getStorageSync('token')
     const userInfo = wx.getStorageSync('userInfo')
-    
-    if (token && userInfo) {
-      this.setData({
-        isLogin: true,
-        userInfo
-      })
-    } else {
-      this.setData({
-        isLogin: false,
-        userInfo: null
-      })
+    const isLogin = !!(token && userInfo)
+
+    // 未变化则不 setData
+    if (isLogin === this.data.isLogin) {
+      if (!isLogin) return
+      const cur = this.data.userInfo
+      if (cur && userInfo && cur.id === userInfo.id && cur.nickname === userInfo.nickname
+        && cur.avatarUrl === userInfo.avatarUrl && cur.hasPhone === userInfo.hasPhone) {
+        return
+      }
+    }
+
+    this.setData({
+      isLogin,
+      userInfo: isLogin ? userInfo : null
+    })
+  },
+
+  // 学习概览：单次轻量请求，拿 pageSize=1 只为取汇总数字
+  async fetchStats() {
+    try {
+      const res = await api.practice.getRecords(1, 1)
+      const { total = 0, totalQuestions = 0, totalDurationText = '0分钟' } = res.data || {}
+      const stats = { total, totalQuestions, totalDurationText }
+      const cur = this.data.stats
+      if (cur.total === total && cur.totalQuestions === totalQuestions
+        && cur.totalDurationText === totalDurationText) {
+        return
+      }
+      wx.setStorageSync('profileStats', stats)
+      this.setData({ stats })
+    } catch (error) {
+      // 概览失败不打扰用户，保留上一次的数字
+      console.error('获取学习概览失败:', error)
     }
   },
 
@@ -98,9 +135,11 @@ Page({
       success: (res) => {
         if (res.confirm) {
           app.clearLoginState()
+          wx.removeStorageSync('profileStats')
           this.setData({
             isLogin: false,
-            userInfo: null
+            userInfo: null,
+            stats: { total: 0, totalQuestions: 0, totalDurationText: '0分钟' }
           })
           wx.showToast({ title: '已退出登录', icon: 'success' })
         }

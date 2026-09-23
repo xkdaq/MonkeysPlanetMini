@@ -1,61 +1,53 @@
 <!--pages/profile/records.wxml-->
 <view class="records-container">
-  <!-- 统计卡片 -->
+  <!-- 统计：四项合并成一张描边卡 -->
   <view class="stats-card">
     <view class="stats-item">
-      <text class="stats-num">{{stats.total}}</text>
-      <text class="stats-label">练习次数</text>
+      <view class="stats-num">{{stats.total}}</view>
+      <view class="stats-label">练习次数</view>
     </view>
     <view class="stats-item">
-      <text class="stats-num">{{stats.totalQuestions}}</text>
-      <text class="stats-label">总题数</text>
+      <view class="stats-num">{{stats.totalQuestions}}</view>
+      <view class="stats-label">总题数</view>
     </view>
     <view class="stats-item">
-      <text class="stats-num">{{stats.totalCorrect}}</text>
-      <text class="stats-label">答对题数</text>
+      <view class="stats-num is-accent">{{stats.totalCorrect}}</view>
+      <view class="stats-label">答对题数</view>
     </view>
     <view class="stats-item">
-      <text class="stats-num">{{stats.totalDurationText}}</text>
-      <text class="stats-label">学习时长</text>
+      <view class="stats-num">{{stats.totalDurationText}}</view>
+      <view class="stats-label">学习时长</view>
     </view>
   </view>
 
   <!-- 记录列表 -->
   <view class="records-list">
-    <view class="section-title">练习记录</view>
-    
+    <view class="list-title">练习记录</view>
+
     <block wx:if="{{records.length > 0}}">
-      <view class="record-item" wx:for="{{records}}" wx:key="id" bindtap="onRecordTap" data-id="{{item.id}}">
+      <view class="record-item" wx:for="{{records}}" wx:key="id" hover-class="record-item-hover" hover-stay-time="60" bindtap="onRecordTap" data-id="{{item.id}}">
         <view class="record-header">
           <text class="record-type">{{item.practiceTypeName}}</text>
           <text class="record-time">{{item.createTime}}</text>
         </view>
-        <view class="record-body">
-          <text class="record-bank">{{item.bankName}}</text>
-          <view class="record-stats">
-            <text class="record-count">{{item.correctCount}}/{{item.totalCount}}题</text>
-            <text class="record-accuracy" style="color: {{item.accuracy >= 80 ? '#07c160' : item.accuracy >= 60 ? '#ff9800' : '#ff5252'}}">{{item.accuracy}}%</text>
-          </view>
-        </view>
-        <view class="record-footer">
-          <text class="record-duration">用时：{{item.durationText}}</text>
+        <view class="record-bank">{{item.bankName}}</view>
+        <view class="record-stats">
+          <text class="record-count">{{item.correctCount}}/{{item.totalCount}} 题</text>
+          <text class="record-accuracy {{item.accuracy >= 80 ? 'is-good' : item.accuracy >= 60 ? 'is-mid' : 'is-low'}}">{{item.accuracy}}%</text>
+          <text class="record-duration">用时 {{item.durationText}}</text>
         </view>
       </view>
-      
+
       <!-- 加载更多 -->
-      <view class="load-more" wx:if="{{loading}}">
-        <text>加载中...</text>
-      </view>
-      <view class="no-more" wx:if="{{!hasMore && records.length > 0}}">
-        <text>没有更多了</text>
-      </view>
+      <view class="load-more" wx:if="{{loading}}">加载中...</view>
+      <view class="no-more" wx:if="{{!hasMore && records.length > 0}}">没有更多了</view>
     </block>
-    
+
     <!-- 空状态 -->
     <view class="empty-state" wx:if="{{!loading && records.length === 0}}">
-      <image class="empty-icon" src="/images/empty.png" mode="aspectFit"/>
+      <image class="empty-icon" src="/images/icon-empty.png" mode="aspectFit"/>
       <text class="empty-text">暂无练习记录</text>
-      <text class="empty-tip">快去刷题吧！</text>
+      <text class="empty-tip">快去刷题吧</text>
     </view>
   </view>
 </view>

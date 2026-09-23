@@ -10,7 +10,7 @@
   <view class="category-list" wx:if="{{grouped && categories.length > 0}}">
     <view class="category-item" wx:for="{{categories}}" wx:for-index="catIndex" wx:key="categoryId">
       <!-- 分类标题 -->
-      <view class="category-header" bindtap="toggleCategory" data-index="{{catIndex}}">
+      <view class="category-header" hover-class="tap-hover" hover-start-time="0" hover-stay-time="70" bindtap="toggleCategory" data-index="{{catIndex}}">
         <view class="category-info">
           <text class="category-name">{{item.categoryName}}</text>
           <text class="category-count">{{item.count}} 道收藏</text>
@@ -29,6 +29,7 @@
           wx:for-item="fav"
           wx:for-index="favIndex"
           wx:key="id"
+          hover-class="tap-hover" hover-start-time="0" hover-stay-time="70"
           bindtap="onFavoriteTap"
           data-category-index="{{catIndex}}"
           data-fav-index="{{favIndex}}"
@@ -58,6 +59,7 @@
       class="favorite-item"
       wx:for="{{favorites}}"
       wx:key="id"
+      hover-class="tap-hover" hover-start-time="0" hover-stay-time="70"
       bindtap="onFavoriteTap"
       data-index="{{index}}"
     >

@@ -5,6 +5,7 @@
   background: var(--white);
   margin: 0 14rpx 20rpx 14rpx;
   border-radius: 8rpx;
+  border: 2rpx solid var(--border-color);
 }
 
 .total-text {
@@ -23,6 +24,7 @@
   border-radius: 16rpx;
   margin: 0 14rpx 20rpx 14rpx;
   overflow: hidden;
+  border: 2rpx solid var(--border-color);
 }
 
 .category-header {
@@ -30,7 +32,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 30rpx;
-  background: #f8f9fa;
+  background: var(--bg-color);
 }
 
 .category-info {
@@ -90,6 +92,7 @@
   border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 20rpx;
+  border: 2rpx solid var(--border-color);
 }
 
 .favorite-content {
@@ -174,4 +177,10 @@
 
 .practice-btn {
   width: 100%;
+}
+
+
+/* 点击反馈：即时背景变化，不做位移/缩放，避免掉帧 */
+.tap-hover {
+  background-color: var(--bg-color) !important;
 }

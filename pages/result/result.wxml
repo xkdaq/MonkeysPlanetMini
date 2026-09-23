@@ -5,7 +5,7 @@
     <view class="result-title">练习完成</view>
     
     <!-- 正确率圆环 -->
-    <view class="accuracy-circle">
+    <view class="accuracy-circle" style="--accuracy: {{accuracy}}">
       <view class="circle-inner">
         <text class="accuracy-value">{{accuracy}}%</text>
         <text class="accuracy-label">正确率</text>

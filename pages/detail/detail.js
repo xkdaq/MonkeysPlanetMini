@@ -89,6 +89,20 @@ Page({
   },
 
   // 网盘卡片点击
+  /**
+   * 仅复制提取码（点击提取码旁的「复制」，不触发打开流程）
+   */
+  onCopyCode(e) {
+    const { code } = e.currentTarget.dataset
+    if (!code) return
+    wx.setClipboardData({
+      data: code,
+      success: () => {
+        wx.showToast({ title: '提取码已复制', icon: 'none' })
+      }
+    })
+  },
+
   onPanTap(e) {
     const { url, code, pan } = e.currentTarget.dataset
 

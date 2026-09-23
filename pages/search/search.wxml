@@ -5,13 +5,13 @@
       <image class="search-icon-img" src="/images/search.png" mode="aspectFit" />
     </view>
     <input class="search-input" placeholder="{{placeholder}}" confirm-type="search" bindinput="onInputChange" bindconfirm="onSearch" value="{{keywords}}" />
-    <view class="search-btn" bindtap="onSearch">搜索</view>
+    <view class="search-btn" hover-class="tap-hover" hover-start-time="0" hover-stay-time="70" bindtap="onSearch">搜索</view>
   </view>
 
   <!-- 资料搜索结果 - 单列横向卡片 -->
   <view wx:if="{{from === 'wangpan'}}" class="content-list">
     <block wx:for="{{list}}" wx:key="id">
-      <view class="content-card" bindtap="onItemTap" data-item="{{item}}">
+      <view class="content-card" hover-class="tap-hover" hover-start-time="0" hover-stay-time="70" bindtap="onItemTap" data-item="{{item}}">
         <!-- 封面图 -->
         <image wx:if="{{item.coverImage}}" class="content-cover" src="{{item.coverImage}}" mode="aspectFill" />
         <!-- 内容区 -->
@@ -37,7 +37,7 @@
   <!-- 文章搜索结果 - 原有列表样式 -->
   <view wx:else class="list">
     <block wx:for="{{list}}" wx:key="id">
-      <view class="list-item" bindtap="onItemTap" data-item="{{item}}">
+      <view class="list-item" hover-class="tap-hover" hover-start-time="0" hover-stay-time="70" bindtap="onItemTap" data-item="{{item}}">
         <view class="title-box">
           <view wx:if="{{item.isTop == 1}}" class="top-tag">置顶</view>
           <text class="title">{{item.title}}</text>
@@ -55,10 +55,11 @@
   </view>
 
   <!-- 加载状态 -->
-  <view wx:if="{{loadingMore}}" class="loading">加载中...</view>
+  <view wx:if="{{(isLoading || loadingMore) && list.length === 0}}" class="loading">加载中...</view>
+  <view wx:if="{{loadingMore && list.length > 0}}" class="loading">加载中...</view>
 
   <!-- 空状态 -->
-  <view wx:if="{{!loadingMore && list.length === 0}}" class="empty-box">
+  <view wx:if="{{!isLoading && !loadingMore && list.length === 0}}" class="empty-box">
     <text class="empty-text">暂无数据</text>
     <text class="empty-hint">换个关键词试试</text>
   </view>

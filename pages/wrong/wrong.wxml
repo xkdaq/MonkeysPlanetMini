@@ -1,57 +1,47 @@
 <!--pages/wrong/wrong.wxml-->
 <view class="container">
-  <!-- 头部操作栏 -->
-  <view class="header-bar">
-    <view class="header-left">
-      <text class="total-text" wx:if="{{grouped}}">共 {{categories.length}} 个章节</text>
-      <text class="total-text" wx:else>共 {{wrongs.length}} 道错题</text>
-    </view>
+  <!-- 头部：总览 + 全部练习 -->
+  <view class="header-bar" wx:if="{{categories.length > 0 || wrongs.length > 0}}">
+    <text class="total-text" wx:if="{{grouped}}">共 {{categories.length}} 个章节 · {{totalCount}} 道错题</text>
+    <text class="total-text" wx:else>共 {{wrongs.length}} 道错题</text>
+    <text class="all-practice" hover-class="all-practice-hover" hover-start-time="0" hover-stay-time="70" bindtap="startAllPractice">全部练习</text>
   </view>
 
   <!-- 按分类分组的错题列表 -->
   <view class="category-list" wx:if="{{grouped && categories.length > 0}}">
-    <view class="category-item" wx:for="{{categories}}" wx:for-index="catIndex" wx:key="categoryId">
-      <!-- 分类标题 -->
-      <view class="category-header" bindtap="toggleCategory" data-index="{{catIndex}}">
+    <view class="category-card {{expandedCategories.includes(catIndex) ? 'is-open' : ''}}" wx:for="{{categories}}" wx:for-index="catIndex" wx:key="categoryId">
+      <!-- 分类标题：练习按钮提到右侧 -->
+      <view class="category-header" hover-class="category-header-hover" hover-start-time="0" hover-stay-time="70" bindtap="toggleCategory" data-index="{{catIndex}}">
         <view class="category-info">
-          <text class="category-name">{{item.categoryName}}</text>
-          <text class="category-count">{{item.count}} 道错题</text>
+          <view class="category-name">{{item.categoryName}}</view>
+          <view class="category-count">{{item.count}} 道错题</view>
         </view>
-        <view class="category-actions">
-          <text class="practice-category-btn" catchtap="startCategoryPractice" data-index="{{catIndex}}">练习</text>
-          <text class="expand-icon {{expandedCategories.includes(catIndex) ? 'expanded' : ''}}">▼</text>
-        </view>
+        <text class="practice-btn" catchtap="startCategoryPractice" data-index="{{catIndex}}">练习</text>
+        <text class="expand-icon {{expandedCategories.includes(catIndex) ? 'expanded' : ''}}">▾</text>
       </view>
-      
-      <!-- 分类下的错题列表 -->
+
+      <!-- 展开后：题干 + 答案对比 -->
       <view class="category-wrongs" wx:if="{{expandedCategories.includes(catIndex)}}">
-        <view 
+        <view
           class="wrong-item"
           wx:for="{{item.wrongs}}"
           wx:for-item="wrong"
           wx:for-index="wrongIndex"
           wx:key="id"
+          hover-class="wrong-item-hover"
+          hover-start-time="0"
+          hover-stay-time="70"
           bindtap="onWrongTap"
           data-id="{{wrong.id}}"
           data-category-index="{{catIndex}}"
           data-wrong-index="{{wrongIndex}}"
         >
-          <!-- 错题内容 -->
-          <view class="wrong-content">
-            <view class="question-text">{{wrong.question.content}}</view>
-            <view class="wrong-info">
-              <text class="wrong-count">错 {{wrong.wrongCount}} 次</text>
-              <text class="wrong-time">{{wrong.lastWrongTime}}</text>
-            </view>
-            <view class="your-answer">
-              <text class="label">你的答案：</text>
-              <text class="value wrong">{{wrong.userAnswer || '未作答'}}</text>
-            </view>
-            <view class="correct-answer">
-              <text class="label">正确答案：</text>
-              <text class="value correct">{{wrong.question.answer}}</text>
-            </view>
+          <view class="question-text">{{wrong.question.content}}</view>
+          <view class="answer-row">
+            <text class="answer-cell">你的答案 <text class="value is-wrong">{{wrong.userAnswer || '未作答'}}</text></text>
+            <text class="answer-cell" wx:if="{{wrong.userAnswer}}">正确答案 <text class="value is-correct">{{wrong.question.answer}}</text></text>
           </view>
+          <view class="wrong-meta">错 {{wrong.wrongCount}} 次 · {{wrong.lastWrongTime}}</view>
         </view>
       </view>
     </view>
@@ -59,30 +49,23 @@
 
   <!-- 平铺错题列表（兼容旧格式） -->
   <view class="wrong-list" wx:if="{{!grouped && wrongs.length > 0}}">
-    <view 
-      class="wrong-item"
+    <view
+      class="wrong-item is-standalone"
       wx:for="{{wrongs}}"
       wx:key="id"
+      hover-class="wrong-item-hover"
+      hover-start-time="0"
+      hover-stay-time="70"
       bindtap="onWrongTap"
       data-id="{{item.id}}"
       data-index="{{index}}"
     >
-      <!-- 错题内容 -->
-      <view class="wrong-content">
-        <view class="question-text">{{item.question.content}}</view>
-        <view class="wrong-info">
-          <text class="wrong-count">错 {{item.wrongCount}} 次</text>
-          <text class="wrong-time">{{item.lastWrongTime}}</text>
-        </view>
-        <view class="your-answer">
-          <text class="label">你的答案：</text>
-          <text class="value wrong">{{item.userAnswer || '未作答'}}</text>
-        </view>
-        <view class="correct-answer">
-          <text class="label">正确答案：</text>
-          <text class="value correct">{{item.question.answer}}</text>
-        </view>
+      <view class="question-text">{{item.question.content}}</view>
+      <view class="answer-row">
+        <text class="answer-cell">你的答案 <text class="value is-wrong">{{item.userAnswer || '未作答'}}</text></text>
+        <text class="answer-cell" wx:if="{{item.userAnswer}}">正确答案 <text class="value is-correct">{{item.question.answer}}</text></text>
       </view>
+      <view class="wrong-meta">错 {{item.wrongCount}} 次 · {{item.lastWrongTime}}</view>
     </view>
   </view>
 

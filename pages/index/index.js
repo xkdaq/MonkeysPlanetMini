@@ -106,7 +106,6 @@ Page({
   async loadHomeData() {
     try {
       this.setData({ isLoading: true })
-      wx.showLoading({ title: '加载中...', mask: true })
       
       const res = await getHomeIndexData(3, 3, 10, 0)
       
@@ -122,7 +121,6 @@ Page({
       console.error('加载首页数据失败:', error)
       this.setData({ isError: true })
     } finally {
-      wx.hideLoading()
       wx.stopPullDownRefresh()
     }
   },

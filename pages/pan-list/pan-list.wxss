@@ -13,7 +13,7 @@
   margin-bottom: 20rpx;
   padding: 16rpx 22rpx 16rpx 24rpx;
   border-radius: 40rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid var(--border-color);
 }
 
 .search-icon-wrap {
@@ -64,13 +64,12 @@
   padding: 24rpx;
   background: var(--white);
   border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  border: 2rpx solid var(--border-color);
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
 .content-card:active {
-  background: #fafafa;
-  transform: scale(0.99);
+  background: var(--bg-color);
 }
 
 /* 封面图 */
@@ -79,7 +78,7 @@
   height: 148rpx;
   flex: 0 0 148rpx;
   border-radius: 12rpx;
-  background: #f0f0f0;
+  background: var(--border-color);
 }
 
 /* 内容区 */
@@ -132,7 +131,7 @@
   padding: 2rpx 12rpx;
   border-radius: 6rpx;
   background: var(--white);
-  border: 1rpx solid #d9d9d9;
+  border: 1rpx solid var(--text-deco);
   color: var(--text-secondary);
 }
 
@@ -195,4 +194,10 @@
 .empty-text {
   font-size: 28rpx;
   color: var(--text-tertiary);
+}
+
+
+/* 点击反馈：即时背景变化，不做位移/缩放，避免掉帧 */
+.tap-hover {
+  background-color: var(--bg-color) !important;
 }

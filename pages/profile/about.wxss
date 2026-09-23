@@ -1,7 +1,7 @@
 /* pages/profile/about.wxss */
 
 .about-container {
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
   min-height: 100vh;
 }
 
@@ -23,13 +23,13 @@
 .app-name {
   font-size: 40rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 12rpx;
 }
 
 .version {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .menu-list {
@@ -42,7 +42,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 30rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--border-color);
 }
 
 .menu-item:last-child {
@@ -51,7 +51,7 @@
 
 .menu-text {
   font-size: 32rpx;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .menu-arrow {
@@ -70,12 +70,12 @@
 .copyright {
   display: block;
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
   margin-bottom: 8rpx;
 }
 
 .powered {
   display: block;
   font-size: 22rpx;
-  color: #bbb;
+  color: var(--text-deco);
 }

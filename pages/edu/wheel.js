@@ -16,11 +16,29 @@ const HISTORY_MAX = 200
 const SPIN_DURATION = 4000
 const THINK_TIP_THRESHOLD = 3000
 
-// 转盘扇区配色（8 色循环）
-const COLORS = [
-  '#07C160', '#36C5DD', '#FFB347', '#FF6B81',
-  '#A8E6CF', '#FFD93D', '#C490E4', '#F88B6D'
-]
+// 转盘扇区配色：设计稿 7B「马卡龙多色」
+// 八格各一种低饱和浅色，每格配一个同色系深色序号，分隔线用白色
+const WHEEL_FILL = ['#bfeedd', '#fde2c4', '#cfe6fb', '#fff1b8', '#e3dcfb', '#ffd6d6', '#c9f0e0', '#fbe7c6']
+const WHEEL_TEXT = ['#1f6b4a', '#8a5911', '#2a5d8f', '#7a6400', '#5a4a9a', '#a33a3a', '#1f6b4a', '#8a5911']
+
+/**
+ * 取第 i 格的配色下标。
+ * 题库题目数不一定是 8 的倍数，绕回起点时末格可能和第 0 格撞色，
+ * 这里给末格换一个既不同于前一格、也不同于第 0 格的下标。
+ */
+function wheelToneIndex(i, N) {
+  const L = WHEEL_FILL.length
+  const idx = i % L
+  if (i !== N - 1 || N <= 1) return idx
+  const first = 0 % L
+  const prev = (N - 2) % L
+  if (idx !== first) return idx
+  for (let k = 1; k < L; k++) {
+    const alt = (idx + k) % L
+    if (alt !== first && alt !== prev) return alt
+  }
+  return idx
+}
 
 Page({
   data: {
@@ -64,7 +82,8 @@ Page({
 
   onLoad() {
     const info = wx.getSystemInfoSync()
-    const size = Math.floor(Math.min(info.windowWidth - 60, 340))
+    // 设计稿：375pt 屏宽对应 252px 转盘，约 0.67；上限 280 免得大屏上过分占版面
+    const size = Math.floor(Math.min(info.windowWidth * 0.67, 280))
     this.setData({ size })
     this._rotation = 0
     this._dpr = info.pixelRatio || 2
@@ -150,10 +169,11 @@ Page({
       ctx.moveTo(cx, cy)
       ctx.arc(cx, cy, r, start, start + seg)
       ctx.closePath()
-      ctx.fillStyle = COLORS[i % COLORS.length]
+      const toneIdx = wheelToneIndex(i, N)
+      ctx.fillStyle = WHEEL_FILL[toneIdx]
       ctx.fill()
-      ctx.strokeStyle = 'rgba(255,255,255,0.3)'
-      ctx.lineWidth = 1
+      ctx.strokeStyle = '#ffffff'
+      ctx.lineWidth = 2
       ctx.stroke()
 
       if (showLabel) {
@@ -162,7 +182,8 @@ Page({
         ctx.rotate(start + seg / 2)
         ctx.textAlign = 'right'
         ctx.textBaseline = 'middle'
-        ctx.fillStyle = '#ffffff'
+        // 浅底上用同色系深色序号
+        ctx.fillStyle = WHEEL_TEXT[toneIdx]
         // 题目多时只画数字，避免文字重叠
         const fontSize = N > 60 ? 8 : N > 40 ? 9 : N > 30 ? 10 : 12
         ctx.font = `bold ${fontSize}px sans-serif`
@@ -175,25 +196,21 @@ Page({
     // 外圈描边
     ctx.beginPath()
     ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.strokeStyle = 'rgba(0,0,0,0.06)'
+    ctx.strokeStyle = '#07C160'
     ctx.lineWidth = 1
     ctx.stroke()
 
     // 指针（固定顶部，不随转盘转）
     ctx.beginPath()
-    ctx.moveTo(cx - 13, 2)
-    ctx.lineTo(cx + 13, 2)
-    ctx.lineTo(cx, 28)
+    ctx.moveTo(cx - 10, 4)
+    ctx.lineTo(cx + 10, 4)
+    ctx.lineTo(cx, 26)
     ctx.closePath()
-    ctx.fillStyle = '#07C160'
+    ctx.fillStyle = '#ffffff'
     ctx.fill()
-    ctx.strokeStyle = '#ffffff'
-    ctx.lineWidth = 2
+    ctx.strokeStyle = '#07C160'
+    ctx.lineWidth = 1.5
     ctx.stroke()
-    ctx.beginPath()
-    ctx.arc(cx, 6, 5, 0, Math.PI * 2)
-    ctx.fillStyle = '#07C160'
-    ctx.fill()
 
     // 中心按钮
     const centerR = size * 0.135
@@ -201,6 +218,7 @@ Page({
     ctx.arc(cx, cy, centerR + 4, 0, Math.PI * 2)
     ctx.fillStyle = '#ffffff'
     ctx.fill()
+    // 实心绿中心 + 白字（马卡龙浅底下需要一个明确的视觉锚点）
     ctx.beginPath()
     ctx.arc(cx, cy, centerR, 0, Math.PI * 2)
     ctx.fillStyle = '#07C160'
@@ -563,5 +581,27 @@ Page({
       this._pendingHistory = null
       setTimeout(() => this.jumpToHistory(item), 300)
     }
+  },
+
+  // 分享标题：带上当前题库名
+  shareTitle() {
+    const bank = this.data.currentBankName
+    return bank && bank !== '选择题库'
+      ? `抽题大转盘 · ${bank}`
+      : '抽题大转盘 · 随机抽题，先想再看'
+  },
+
+  /**
+   * 分享好友
+   */
+  onShareAppMessage() {
+    return { title: this.shareTitle() }
+  },
+
+  /**
+   * 分享朋友圈
+   */
+  onShareTimeline() {
+    return { title: this.shareTitle() }
   }
 })

@@ -53,13 +53,12 @@
   padding: 24rpx;
   background: var(--white);
   border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  border: 2rpx solid var(--border-color);
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
 .content-card:active {
-  background: #fafafa;
-  transform: scale(0.99);
+  background: var(--bg-color);
 }
 
 .content-cover {
@@ -67,7 +66,7 @@
   height: 148rpx;
   flex: 0 0 148rpx;
   border-radius: 12rpx;
-  background: #f0f0f0;
+  background: var(--border-color);
 }
 
 .content-main {
@@ -118,7 +117,7 @@
   padding: 2rpx 12rpx;
   border-radius: 6rpx;
   background: var(--white);
-  border: 1rpx solid #d9d9d9;
+  border: 1rpx solid var(--text-deco);
   color: var(--text-secondary);
 }
 
@@ -157,12 +156,12 @@
   margin: 20rpx;
   border-radius: 16rpx;
   padding: 0 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  border: 2rpx solid var(--border-color);
 }
 
 .list-item {
   padding: 24rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--border-color);
 }
 
 .list-item:last-child {
@@ -177,7 +176,7 @@
 
 .title {
   font-size: 30rpx;
-  color: #333;
+  color: var(--text-primary);
   line-height: 1.5;
   flex: 1;
 }
@@ -190,7 +189,7 @@
 
 .date {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* 分类标签 */
@@ -206,29 +205,15 @@
   border-radius: 8rpx;
 }
 
-.tag-0 {
-  background-color: #e6f7f0;
-  color: #07c160;
-}
-
-.tag-1 {
-  background-color: #fff2e8;
-  color: #ff7a45;
-}
-
-.tag-2 {
-  background-color: #e6f4ff;
-  color: #1890ff;
-}
-
-.tag-3 {
-  background-color: #f6ffed;
-  color: #52c41a;
-}
-
+/* 标签一律描边式，不再五色浅底 */
+.tag-0,
+.tag-1,
+.tag-2,
+.tag-3,
 .tag-4 {
-  background-color: #fff0f6;
-  color: #eb2f96;
+  background-color: transparent;
+  border: 2rpx solid var(--primary-color);
+  color: var(--primary-deep);
 }
 
 /* 加载状态 */
@@ -236,7 +221,7 @@
   text-align: center;
   padding: 30rpx 0;
   font-size: 26rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* 空状态 */
@@ -250,11 +235,17 @@
 
 .empty-text {
   font-size: 28rpx;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 10rpx;
 }
 
 .empty-hint {
   font-size: 26rpx;
-  color: #999;
+  color: var(--text-tertiary);
+}
+
+
+/* 点击反馈：即时背景变化，不做位移/缩放，避免掉帧 */
+.tap-hover {
+  background-color: var(--bg-color) !important;
 }

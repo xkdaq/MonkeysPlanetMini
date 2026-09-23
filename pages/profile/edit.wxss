@@ -1,7 +1,7 @@
 /* pages/profile/edit.wxss */
 
 .edit-container {
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
   min-height: 100vh;
   padding: 20rpx 0;
 }
@@ -21,7 +21,7 @@
 
 .label {
   font-size: 32rpx;
-  color: #333;
+  color: var(--text-primary);
   width: 150rpx;
 }
 
@@ -46,7 +46,7 @@
   flex: 1;
   text-align: right;
   font-size: 32rpx;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .picker {
@@ -56,13 +56,13 @@
 
 .picker text {
   font-size: 32rpx;
-  color: #333;
+  color: var(--text-primary);
   margin-right: 10rpx;
 }
 
 .form-item.readonly .value {
   font-size: 32rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .save-section {
@@ -71,7 +71,7 @@
 }
 
 .save-btn {
-  background-color: #07c160;
+  background-color: var(--primary-color);
   color: #fff;
   font-size: 36rpx;
   border-radius: 8rpx;

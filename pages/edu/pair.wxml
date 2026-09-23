@@ -59,9 +59,9 @@
 
   <!-- 操作 -->
   <view class="act-row">
-    <view class="btn gold" bindtap="onHint">{{hintFree > 0 ? '提示（免费 1 次）' : '提示（-20 分）'}}</view>
-    <view class="btn ghost" bindtap="onShuffle">重排</view>
-    <view class="btn warn" bindtap="onReset">重新开始</view>
+    <view class="btn gold" hover-class="btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="onHint">提示<text class="btn-sub">{{hintFree > 0 ? '免费' : '-20'}}</text></view>
+    <view class="btn" hover-class="btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="onShuffle">重排</view>
+    <view class="btn danger" hover-class="btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="onReset">重新开始</view>
   </view>
 
   <view class="tip">进度自动保存在本机 · 答对一组即从错题本移除</view>
@@ -105,8 +105,8 @@
     <view class="tally-item"><text class="t-v">{{wrongCount}}</text><text class="t-l">错题</text></view>
   </view>
   <view class="r-row">
-    <view class="btn primary" bindtap="onReset">再玩一次</view>
-    <view class="btn ghost" wx:if="{{showWrongBtn}}" bindtap="enterWrong">只练错题</view>
-    <view class="btn ghost" bindtap="closeResult">关闭</view>
+    <view class="btn primary" hover-class="btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="onReset">再玩一次</view>
+    <view class="btn ghost" wx:if="{{showWrongBtn}}" hover-class="btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="enterWrong">只练错题</view>
+    <view class="btn ghost" hover-class="btn-hover" hover-start-time="0" hover-stay-time="70" bindtap="closeResult">关闭</view>
   </view>
 </view>

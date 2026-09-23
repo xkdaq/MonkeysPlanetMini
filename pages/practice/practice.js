@@ -37,6 +37,9 @@ Page({
     // 计时
     startTime: null,
     duration: 0,
+    questionTypeName: '',
+    bankName: '',
+    categoryName: '',
     timer: null,
     
     // 模式切换
@@ -69,13 +72,25 @@ Page({
   },
 
   onLoad(options) {
-    const { bankId, categoryId, practiceType = '1', title, questionType, wrongMode, favoriteMode, questionIds, currentIndex = '0', resume = '' } = options
-    
+    const { bankId, categoryId, practiceType = '1', title, categoryName, bankName, questionType, wrongMode, favoriteMode, questionIds, currentIndex = '0', resume = '', autoResume = '' } = options
+
+    // 小程序会自动 decode 一次 query，这里再兜一层，兼容历史未编码的链接
+    const safeDecode = (v) => {
+      if (!v || typeof v !== 'string') return ''
+      if (v.indexOf('%') === -1) return v
+      try { return decodeURIComponent(v) } catch (e) { return v }
+    }
+    const categoryNameText = safeDecode(categoryName)
+    const bankNameText = safeDecode(bankName)
+
     this.setData({
       bankId: bankId ? parseInt(bankId) : null,
       categoryId: categoryId ? parseInt(categoryId) : null,
       practiceType: parseInt(practiceType),
-      title: title || '练习',
+      categoryName: categoryNameText,
+      bankName: bankNameText,
+      // 章节练习没有单独传 title，用章节名兜底（此前会一律回落成「练习」）
+      title: safeDecode(title) || categoryNameText || '练习',
       questionType: questionType ? parseInt(questionType) : null,
       wrongMode: wrongMode === '1',
       favoriteMode: favoriteMode === '1',
@@ -108,6 +123,10 @@ Page({
       if (index > 0) {
         this.setData({ currentIndex: index })
       }
+    } else if (autoResume === '1') {
+      // 从「继续上次练习」进来：直接恢复，不再多弹一次确认
+      this.setData({ savedProgress })
+      this.resumeProgress()
     } else {
       // 有保存的进度，显示恢复弹窗
       // 计算正确率和用时显示
@@ -171,7 +190,7 @@ Page({
 
   // 保存刷题进度
   saveProgress() {
-    const { bankId, categoryId, practiceType, questions, currentIndex, answerRecords, correctCount, wrongCount, practiceMode, duration } = this.data
+    const { bankId, categoryId, practiceType, questions, currentIndex, answerRecords, correctCount, wrongCount, practiceMode, duration, title, bankName, categoryName } = this.data
     const progressKey = this.getProgressKey()
 
     // 已交卷（记录已上报）或无题目时，清除进度；其他情况一律保留进度以便恢复
@@ -184,6 +203,9 @@ Page({
       bankId,
       categoryId,
       practiceType,
+      title,
+      bankName,
+      categoryName,
       currentIndex,
       totalCount: questions.length,
       answerRecords,
@@ -415,7 +437,11 @@ Page({
       6: '材料题'
     }
     const typeName = typeNames[question.type] || ''
-    const typeTagHtml = `<span style="color: #07c160; font-weight: 500; margin-right: 8px;">(${typeName})</span>`
+    // 题型标签拼在题干最前面，随正文一起换行。
+    // 注意：rich-text 里内联元素的 margin 不生效（这正是之前标签和题干挤在一起的原因），
+    // 间距只能靠 padding + 后面跟的 &nbsp; 撑开。色值也必须写字面值，
+    // 因为 rich-text 不继承页面上的 CSS 变量。
+    const typeTagHtml = `<span style="color:#09814a;background:#f1faf5;font-size:24rpx;font-weight:600;padding:4rpx 14rpx;border-radius:8rpx;">${typeName}</span>&nbsp;&nbsp;`
     const questionTitleWithType = typeTagHtml + (question.content || '')
     
     this.setData({
@@ -428,7 +454,8 @@ Page({
       showAnalysis: showAnalysis,
       optionClasses: optionClasses,
       cardItemClasses,
-      questionTitleWithType: questionTitleWithType
+      questionTitleWithType: questionTitleWithType,
+      questionTypeName: typeName
     })
     
     // 检查收藏状态
@@ -481,6 +508,12 @@ Page({
   },
 
   // 提交答案（多选题使用）
+  // 填空题 / 问答题输入（此前 WXML 绑定了但 JS 缺失，导致输入内容没有存进 userAnswer）
+  onTextInput(e) {
+    if (this.data.isAnswered) return
+    this.setData({ userAnswer: e.detail.value })
+  },
+
   onSubmitAnswer() {
     if (this._submitting) return
     if (!this.data.userAnswer) {
@@ -773,11 +806,13 @@ Page({
 
   // 开始计时
   startTimer() {
+    // duration 不参与渲染（WXML 里没有绑定），直接写 data 不触发 setData，
+    // 避免刷题页每秒做一次无意义的视图层重渲染。
+    // 注意：若以后要在页面上显示用时，这里必须改回 setData。
     const timer = setInterval(() => {
-      const duration = Math.floor((Date.now() - this.data.startTime) / 1000)
-      this.setData({ duration })
+      this.data.duration = Math.floor((Date.now() - this.data.startTime) / 1000)
     }, 1000)
-    
+
     this.setData({ timer })
   },
 
