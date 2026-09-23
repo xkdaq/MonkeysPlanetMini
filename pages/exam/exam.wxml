@@ -1,132 +1,57 @@
 <!--pages/exam/exam.wxml-->
 <view class="container">
-  <block wx:if="{{isBankList}}">
-    <!-- 继续上次练习：本地进度存档，无需请求 -->
-    <view class="resume-card" wx:if="{{lastPractice}}">
-      <view class="resume-head">
-        <text class="resume-label">继续上次练习</text>
-        <text class="resume-switch" wx:if="{{progressCount > 1}}" bindtap="onSwitchProgress">换一个 ›</text>
-      </view>
-      <view class="resume-title">{{lastPractice.label}}</view>
-      <view class="resume-progress">
-        <view class="resume-bar">
-          <view class="resume-bar-fill" style="width: {{lastPractice.percent}}%"></view>
-        </view>
-        <view class="resume-num"><text class="resume-num-cur">{{lastPractice.done}}</text> / {{lastPractice.total}}</view>
-      </view>
-      <view class="resume-btn" hover-class="resume-btn-hover" hover-stay-time="60" bindtap="onContinuePractice">继续练习</view>
+  <!-- 继续上次练习：本地进度存档，无需请求 -->
+  <view class="resume-card" wx:if="{{lastPractice}}">
+    <view class="resume-head">
+      <text class="resume-label">继续上次练习</text>
+      <text class="resume-switch" wx:if="{{progressCount > 1}}" bindtap="onSwitchProgress">换一个 ›</text>
     </view>
+    <view class="resume-title">{{lastPractice.label}}</view>
+    <view class="resume-progress">
+      <view class="resume-bar">
+        <view class="resume-bar-fill" style="width: {{lastPractice.percent}}%"></view>
+      </view>
+      <view class="resume-num"><text class="resume-num-cur">{{lastPractice.done}}</text> / {{lastPractice.total}}</view>
+    </view>
+    <view class="resume-btn" hover-class="resume-btn-hover" hover-stay-time="60" bindtap="onContinuePractice">继续练习</view>
+  </view>
 
-    <!-- 趣味背诵 -->
-    <view class="section-head">
-      <text class="section-name">趣味背诵</text>
-      <text class="section-more" bindtap="goEduModule">333 教育综合 ›</text>
+  <!-- 趣味背诵 -->
+  <view class="section-head">
+    <text class="section-name">趣味背诵</text>
+    <text class="section-more" bindtap="goEduModule">333 教育综合 ›</text>
+  </view>
+  <view class="game-grid">
+    <view class="game-card" hover-class="game-card-hover" hover-stay-time="60" bindtap="goWheel">
+      <view class="game-badge">转</view>
+      <view class="game-name">抽题大转盘</view>
+      <view class="game-desc">随机抽题，先想再看</view>
+      <view class="game-meta">已抽 {{eduStats.wheelDrawn}} 次</view>
     </view>
-    <view class="game-grid">
-      <view class="game-card" hover-class="game-card-hover" hover-stay-time="60" bindtap="goWheel">
-        <view class="game-badge">转</view>
-        <view class="game-name">抽题大转盘</view>
-        <view class="game-desc">随机抽题，先想再看</view>
-        <view class="game-meta">已抽 {{eduStats.wheelDrawn}} 次</view>
-      </view>
-      <view class="game-card" hover-class="game-card-hover" hover-stay-time="60" bindtap="goPair">
-        <view class="game-badge is-warm">连</view>
-        <view class="game-name">帽子题连连看</view>
-        <view class="game-desc">96 组考点闯关配对</view>
-        <view class="game-meta is-warm">第 {{eduStats.pairLevel}} / 12 关</view>
-      </view>
+    <view class="game-card" hover-class="game-card-hover" hover-stay-time="60" bindtap="goPair">
+      <view class="game-badge is-warm">连</view>
+      <view class="game-name">帽子题连连看</view>
+      <view class="game-desc">96 组考点闯关配对</view>
+      <view class="game-meta is-warm">第 {{eduStats.pairLevel}} / 12 关</view>
     </view>
+  </view>
 
-    <!-- 选择题库 -->
-    <view class="section-head">
-      <text class="section-name">选择题库</text>
-      <text class="section-extra">共 {{banks.length}} 个</text>
-    </view>
+  <!-- 选择题库 -->
+  <view class="section-head">
+    <text class="section-name">选择题库</text>
+    <text class="section-extra">共 {{banks.length}} 个</text>
+  </view>
 
-    <view class="bank-list" wx:if="{{banks.length > 0}}">
-      <view class="bank-item" wx:for="{{banks}}" wx:key="id" hover-class="bank-item-hover" hover-stay-time="60" bindtap="onBankItemTap" data-id="{{item.id}}">
-        <view class="bank-info">
-          <view class="bank-name">{{item.name}}</view>
-          <view class="bank-desc">{{item.description || '暂无题库描述'}}</view>
-        </view>
-        <text class="bank-arrow">›</text>
+  <view class="bank-list" wx:if="{{banks.length > 0}}">
+    <view class="bank-item" wx:for="{{banks}}" wx:key="id" hover-class="bank-item-hover" hover-stay-time="60" bindtap="onBankItemTap" data-id="{{item.id}}">
+      <view class="bank-info">
+        <view class="bank-name">{{item.name}}</view>
+        <view class="bank-desc">{{item.description || '暂无题库描述'}}</view>
       </view>
+      <text class="bank-arrow">›</text>
     </view>
-    <view class="empty-state" wx:else>
-      <text>{{loading ? '题库加载中...' : '暂无题库数据'}}</text>
-    </view>
-  </block>
-
-  <block wx:else>
-    <view class="bank-detail-header">
-      <view class="back-btn" hover-class="back-btn-hover" hover-stay-time="60" bindtap="onBackToBanks">‹ 题库列表</view>
-      <view class="detail-bank-name">{{currentBankName}}</view>
-      <view class="detail-bank-desc">{{selectedBank.description || '选择分类或练习方式开始刷题'}}</view>
-    </view>
-
-    <!-- 快捷入口 -->
-    <view class="quick-actions">
-      <view class="action-item" hover-class="action-item-hover" hover-stay-time="60" bindtap="onOrderPractice">
-        <view class="action-icon">
-          <image src="/images/exam-order.png" mode="aspectFit" class="action-icon-img"/>
-        </view>
-        <text class="action-text">顺序练习</text>
-      </view>
-      <view class="action-item" hover-class="action-item-hover" hover-stay-time="60" bindtap="onRandomPractice">
-        <view class="action-icon">
-          <image src="/images/exam-random.png" mode="aspectFit" class="action-icon-img"/>
-        </view>
-        <text class="action-text">随机练习</text>
-      </view>
-      <view class="action-item" hover-class="action-item-hover" hover-stay-time="60" bindtap="onWrongPractice">
-        <view class="action-icon">
-          <image src="/images/exam-wrong.png" mode="aspectFit" class="action-icon-img"/>
-        </view>
-        <text class="action-text">错题练习</text>
-      </view>
-      <view class="action-item" hover-class="action-item-hover" hover-stay-time="60" bindtap="onFavoriteTap">
-        <view class="action-icon">
-          <image src="/images/exam-favorite.png" mode="aspectFit" class="action-icon-img"/>
-        </view>
-        <text class="action-text">我的收藏</text>
-      </view>
-    </view>
-
-    <!-- 科目切换：仅三级分类题库显示 -->
-    <scroll-view class="subject-tabs" scroll-x="true" enable-flex="true" wx:if="{{subjects.length > 0}}">
-      <view
-        class="subject-tab {{currentSubjectId == item.id ? 'active' : ''}}"
-        wx:for="{{subjects}}"
-        wx:key="id"
-        hover-class="subject-tab-hover"
-        hover-stay-time="60"
-        bindtap="onSubjectTap"
-        data-id="{{item.id}}"
-      >
-        {{item.name}}
-      </view>
-    </scroll-view>
-
-    <!-- 分类列表 -->
-    <view class="section-head">
-      <text class="section-name">题库分类</text>
-    </view>
-    <view class="category-card" wx:if="{{categories.length > 0}}">
-      <view class="category-item" wx:for="{{categories}}" wx:key="id">
-        <view class="category-header" hover-class="category-header-hover" hover-stay-time="60" bindtap="onParentCategoryTap" data-id="{{item.id}}" data-name="{{item.name}}" data-has-children="{{item.children && item.children.length > 0}}">
-          <text class="category-name">{{item.name}}</text>
-          <text class="category-arrow" wx:if="{{!item.children || item.children.length == 0}}">›</text>
-        </view>
-        <view class="sub-category-list" wx:if="{{item.children && item.children.length > 0}}">
-          <view class="sub-category-item" wx:for="{{item.children}}" wx:for-item="sub" wx:key="id" hover-class="sub-category-item-hover" hover-stay-time="60" bindtap="onCategoryTap" data-id="{{sub.id}}" data-name="{{sub.name}}" data-parent-name="{{item.name}}">
-            <text class="sub-name">{{sub.name}}</text>
-            <text class="category-arrow">›</text>
-          </view>
-        </view>
-      </view>
-    </view>
-    <view class="empty-state" wx:else>
-      <text>暂无分类数据</text>
-    </view>
-  </block>
+  </view>
+  <view class="empty-state" wx:else>
+    <text>{{loading ? '题库加载中...' : '暂无题库数据'}}</text>
+  </view>
 </view>

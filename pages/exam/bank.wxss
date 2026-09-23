@@ -1,0 +1,204 @@
+/* pages/exam/bank.wxss */
+/* 注：小程序页面样式不共享，这里的通用类（.section-head / .empty-state 等）
+   与 exam.wxss 各存一份是必要的，不是重复冗余。 */
+
+.container {
+  min-height: 100vh;
+  background: var(--bg-color);
+  padding: 32rpx 32rpx 60rpx;
+  box-sizing: border-box;
+}
+
+/* 单页模式下的返回入口 */
+.entry-back {
+  display: inline-block;
+  margin-bottom: 20rpx;
+  padding: 8rpx 0;
+  font-size: 25rpx;
+  color: var(--primary-deep);
+}
+
+.entry-back-hover {
+  opacity: 0.6;
+}
+
+/* 题库标题 */
+.bank-detail-header {
+  padding: 0 4rpx 8rpx;
+}
+
+.detail-bank-name {
+  font-size: 38rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.detail-bank-desc {
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+}
+
+/* 快捷入口 */
+.quick-actions {
+  display: flex;
+  margin-top: 32rpx;
+  background: var(--white);
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 32rpx 0;
+}
+
+.action-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.action-item-hover {
+  opacity: 0.6;
+}
+
+.action-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 22rpx;
+  background: var(--primary-light);
+  border: 2rpx solid var(--primary-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-icon-img {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.action-text {
+  font-size: 22rpx;
+  color: var(--text-secondary);
+}
+
+/* 科目切换 */
+.subject-tabs {
+  margin-top: 32rpx;
+  white-space: nowrap;
+}
+
+.subject-tab {
+  display: inline-block;
+  margin-right: 14rpx;
+  padding: 10rpx 26rpx;
+  border-radius: 28rpx;
+  border: 2rpx solid var(--border-color);
+  background: var(--white);
+  color: var(--text-secondary);
+  font-size: 24rpx;
+  line-height: 1.5;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.subject-tab:last-child {
+  margin-right: 0;
+}
+
+.subject-tab.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--white);
+  font-weight: 600;
+}
+
+.subject-tab-hover {
+  opacity: 0.7;
+}
+
+/* 分组标题 */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 36rpx 4rpx 20rpx;
+}
+
+.section-name {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 分类列表 */
+.category-card {
+  background: var(--white);
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 0 32rpx;
+}
+
+.category-item {
+  border-bottom: 2rpx solid var(--border-color);
+}
+
+.category-item:last-child {
+  border-bottom: none;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 0;
+}
+
+.category-header-hover {
+  background: var(--bg-color);
+}
+
+.category-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.category-arrow {
+  flex: none;
+  font-size: 30rpx;
+  line-height: 1;
+  color: var(--text-deco);
+}
+
+.sub-category-list {
+  padding-bottom: 12rpx;
+}
+
+.sub-category-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0 20rpx 24rpx;
+  border-left: 2rpx solid var(--border-color);
+  margin-left: 8rpx;
+}
+
+.sub-category-item-hover {
+  background: var(--bg-color);
+}
+
+.sub-name {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+/* 空状态 */
+.empty-state {
+  padding: 100rpx 0;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 26rpx;
+}

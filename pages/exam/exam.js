@@ -3,17 +3,6 @@ const api = require('../../utils/api.js')
 Page({
   data: {
     banks: [],
-    viewMode: 'bankList',
-    isBankList: true,
-    selectedBank: null,
-    currentBankId: null,
-    currentBankIndex: 0,
-    currentBankName: '请选择',
-    subjects: [],
-    currentSubjectId: null,
-    currentSubjectName: '',
-    allCategoryTree: [],
-    categories: [],
     loading: false,
     // 继续上次练习（本地存档，按保存时间倒序）
     progressList: [],
@@ -24,12 +13,6 @@ Page({
     eduStats: {
       wheelDrawn: 0,
       pairLevel: 1
-    },
-    stats: {
-      totalQuestions: 0,
-      todayQuestions: 0,
-      wrongCount: 0,
-      favoriteCount: 0
     }
   },
 
@@ -38,18 +21,35 @@ Page({
   },
 
   onShow() {
-    // 题库列表态：只读本地存档，零网络请求，切 tab 不会卡
-    if (this.data.viewMode === 'bankList') {
-      this.loadLocalProgress()
-      this.loadEduStats()
+    // 只读本地存档，零网络请求，切 tab / 从二级页返回都不会卡
+    this.loadLocalProgress()
+    this.loadEduStats()
+    this.resumePendingBank()
+  },
+
+  /**
+   * 二级页因「去登录」被 switchTab 销毁时会留下 pendingBank，
+   * 登录成功回到本 tab 后自动跳回那个题库；没登录成功就丢弃。
+   */
+  resumePendingBank() {
+    let pending = null
+    try {
+      pending = wx.getStorageSync('pendingBank')
+    } catch (e) {
       return
     }
-    // 每次显示页面时刷新统计数据
-    const token = wx.getStorageSync('token')
-    const bankId = this.data.currentBankId
-    if (this.data.viewMode === 'bankDetail' && token && bankId) {
-      this.loadStats()
-    }
+    if (!pending || !pending.bankId) return
+
+    try { wx.removeStorageSync('pendingBank') } catch (e) { /* 忽略 */ }
+
+    if (!wx.getStorageSync('token')) return   // 没登录成功，不打扰
+
+    const parts = [
+      `bankId=${pending.bankId}`,
+      `bankName=${encodeURIComponent(pending.bankName || '')}`
+    ]
+    if (pending.bankDesc) parts.push(`bankDesc=${encodeURIComponent(pending.bankDesc)}`)
+    wx.navigateTo({ url: `/pages/exam/bank?${parts.join('&')}` })
   },
 
   // 读取本地刷题存档，组装「继续上次练习」
@@ -154,6 +154,29 @@ Page({
   },
 
   // 读取趣味背诵本地进度
+  // 检查登录状态（本项目各页各持一份，与 index/profile 一致）
+  checkLogin() {
+    const token = wx.getStorageSync('token')
+    if (!token) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录后再进行练习',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({
+              url: '/pages/profile/profile'
+            })
+          }
+        }
+      })
+      return false
+    }
+    return true
+  },
+
   loadEduStats() {
     let wheelDrawn = 0
     let pairLevel = 1
@@ -192,361 +215,38 @@ Page({
         loading: false 
       })
       // 题库名要靠这份列表反查，拿到后重算一次「继续上次练习」
-      if (this.data.viewMode === 'bankList') {
-        this.loadLocalProgress()
-      }
+      this.loadLocalProgress()
     } catch (error) {
       this.setData({ loading: false })
       console.error('加载题库失败:', error)
     }
   },
 
-  // 点击题库进入详情
+  // 点题库进二级页（原先是在本页切 viewMode，没有原生返回、tabBar 还在）
   onBankItemTap(e) {
     const bankId = e.currentTarget.dataset.id
-    this.selectBank(bankId)
+    const bank = this.data.banks.find(item => item.id == bankId)
+    if (!bank) return
+    const parts = [
+      `bankId=${bankId}`,
+      `bankName=${encodeURIComponent(bank.name || '')}`
+    ]
+    // 描述是后台可编辑的自由文本，编码后一个中文占 9 字节，
+    // 不设上限可能撑爆 navigateTo 的 URL 长度，这里截断兜底
+    if (bank.description) {
+      parts.push(`bankDesc=${encodeURIComponent(String(bank.description).slice(0, 50))}`)
+    }
+    wx.navigateTo({ url: `/pages/exam/bank?${parts.join('&')}` })
   },
 
-  // 选择题库
-  selectBank(bankId) {
-    const banks = this.data.banks
-    const index = banks.findIndex(item => item.id == bankId)
-    const selectedBank = index > -1 ? banks[index] : null
-    const name = selectedBank ? selectedBank.name : '请选择'
-    
-    this.setData({ 
-      viewMode: 'bankDetail',
-      isBankList: false,
-      selectedBank,
-      currentBankId: bankId,
-      currentBankIndex: index > -1 ? index : 0,
-      currentBankName: name
-    })
-    wx.setNavigationBarTitle({ title: name })
-    this.loadCategories(bankId)
-    
-    // 只有登录后才加载统计数据
-    const token = wx.getStorageSync('token')
-    if (token) {
-      this.loadStats()
-    } else {
-      // 未登录，重置统计数据
-      this.setData({
-        'stats.wrongCount': 0,
-        'stats.favoriteCount': 0
-      })
-    }
-  },
-
-  // 返回题库列表
-  onBackToBanks() {
-    this.setData({
-      viewMode: 'bankList',
-      isBankList: true,
-      selectedBank: null,
-      currentBankId: null,
-      currentBankIndex: 0,
-      currentBankName: '请选择',
-      subjects: [],
-      currentSubjectId: null,
-      currentSubjectName: '',
-      allCategoryTree: [],
-      categories: [],
-      stats: {
-        totalQuestions: 0,
-        todayQuestions: 0,
-        wrongCount: 0,
-        favoriteCount: 0
-      }
-    })
-    wx.setNavigationBarTitle({ title: '题库' })
-  },
-
-  // 加载分类
-  async loadCategories(bankId) {
-    try {
-      const res = await api.exam.getCategoryTree(bankId)
-      const result = this.processCategories(res.data || [])
-      this.setData({
-        subjects: result.subjects,
-        currentSubjectId: result.currentSubjectId,
-        currentSubjectName: result.currentSubjectName,
-        allCategoryTree: result.allCategoryTree,
-        categories: result.categories
-      })
-    } catch (error) {
-      console.error('加载分类失败:', error)
-    }
-  },
-
-  // 处理分类数据，兼容“题库-章-节”和“题库-科目-章-节”
-  processCategories(list) {
-    const allCategoryTree = this.buildCategoryTree(list)
-    const hasSubjectLevel = allCategoryTree.some(item =>
-      item.children && item.children.some(child => child.children && child.children.length > 0)
-    )
-
-    if (!hasSubjectLevel) {
-      return {
-        subjects: [],
-        currentSubjectId: null,
-        currentSubjectName: '',
-        allCategoryTree,
-        categories: allCategoryTree
-      }
-    }
-
-    const subjects = allCategoryTree
-    const currentSubject = subjects[0] || null
-    return {
-      subjects,
-      currentSubjectId: currentSubject ? currentSubject.id : null,
-      currentSubjectName: currentSubject ? currentSubject.name : '',
-      allCategoryTree,
-      categories: currentSubject ? (currentSubject.children || []) : []
-    }
-  },
-
-  buildCategoryTree(list) {
-    const map = {}
-
-    const collect = (items) => {
-      ;(items || []).forEach(item => {
-        if (!map[item.id]) {
-          map[item.id] = {
-            ...item,
-            children: []
-          }
-        } else {
-          map[item.id] = {
-            ...map[item.id],
-            ...item,
-            children: map[item.id].children || []
-          }
-        }
-        if (item.children && item.children.length > 0) {
-          collect(item.children)
-        }
-      })
-    }
-
-    collect(list)
-
-    Object.keys(map).forEach(id => {
-      map[id].children = []
-    })
-
-    const roots = []
-    Object.keys(map).forEach(id => {
-      const item = map[id]
-      if (item.parentId && item.parentId > 0 && map[item.parentId]) {
-        map[item.parentId].children.push(item)
-      } else {
-        roots.push(item)
-      }
-    })
-
-    const sortByOrder = (items) => {
-      items.sort((a, b) => {
-        const sortA = a.sort || 0
-        const sortB = b.sort || 0
-        return sortA === sortB ? a.id - b.id : sortA - sortB
-      })
-      items.forEach(item => sortByOrder(item.children || []))
-    }
-    sortByOrder(roots)
-
-    return roots
-  },
-
-  // 点击科目切换章/节
-  onSubjectTap(e) {
-    const subjectId = e.currentTarget.dataset.id
-    const subject = this.data.subjects.find(item => item.id == subjectId)
-    // 点当前科目不重复渲染
-    if (!subject || subject.id == this.data.currentSubjectId) return
-    this.setData({
-      currentSubjectId: subject.id,
-      currentSubjectName: subject.name,
-      categories: subject.children || []
-    })
-  },
-
-  // 加载统计数据
-  async loadStats() {
-    // 检查登录状态
-    const token = wx.getStorageSync('token')
-    if (!token) {
-      // 未登录，显示默认数据
-      this.setData({
-        'stats.wrongCount': 0,
-        'stats.favoriteCount': 0
-      })
-      return
-    }
-    
-    // 检查是否已选择题库
-    if (!this.data.currentBankId) {
-      this.setData({
-        'stats.wrongCount': 0,
-        'stats.favoriteCount': 0
-      })
-      return
-    }
-    
-    try {
-      // 获取错题数量
-      const wrongRes = await api.wrong.getList(this.data.currentBankId)
-      const wrongCount = wrongRes.data ? wrongRes.data.length : 0
-
-      // 获取收藏数量
-      const favRes = await api.favorite.getList(this.data.currentBankId)
-      const favoriteCount = favRes.data ? favRes.data.length : 0
-
-      this.setData({
-        'stats.wrongCount': wrongCount,
-        'stats.favoriteCount': favoriteCount
-      })
-    } catch (error) {
-      console.error('加载统计数据失败:', error)
-      // 出错时显示默认值，不打扰用户
-      this.setData({
-        'stats.wrongCount': 0,
-        'stats.favoriteCount': 0
-      })
-    }
-  },
-
-  // 检查登录状态
-  checkLogin() {
-    const token = wx.getStorageSync('token')
-    if (!token) {
-      wx.showModal({
-        title: '提示',
-        content: '请先登录后再进行练习',
-        showCancel: true,
-        cancelText: '取消',
-        confirmText: '去登录',
-        success: (res) => {
-          if (res.confirm) {
-            // 跳转到个人中心页面登录
-            wx.switchTab({
-              url: '/pages/profile/profile'
-            })
-          }
-        }
-      })
-      return false
-    }
-    return true
-  },
-
-  // 点击分类开始刷题
-  onCategoryTap(e) {
-    // 检查登录状态
-    if (!this.checkLogin()) {
-      return
-    }
-    const { id, name, parentName } = e.currentTarget.dataset
-    const bankName = this.data.currentBankName || ''
-    // 点的是「节」时带上所属「章」，拼成完整路径（与错题本的「父 / 子」一致）
-    const fullName = parentName && parentName !== name
-      ? `${parentName} / ${name}`
-      : (name || '')
-    wx.navigateTo({
-      url: `/pages/practice/practice?categoryId=${id}`
-        + `&categoryName=${encodeURIComponent(fullName)}`
-        + `&bankId=${this.data.currentBankId}`
-        + `&bankName=${encodeURIComponent(bankName)}`
-        + `&practiceType=1`
-    })
-  },
-
-  onParentCategoryTap(e) {
-    const { id, name, hasChildren } = e.currentTarget.dataset
-    if (hasChildren === true || hasChildren === 'true') {
-      return
-    }
-    this.onCategoryTap({
-      currentTarget: {
-        dataset: { id, name, parentName: '' }
-      }
-    })
-  },
-
-  // 顺序练习
-  onOrderPractice() {
-    if (!this.data.currentBankId) {
-      wx.showToast({ title: '请先选择题库', icon: 'none' })
-      return
-    }
-    // 检查登录状态
-    if (!this.checkLogin()) {
-      return
-    }
-    wx.navigateTo({
-      url: `/pages/practice/practice?bankId=${this.data.currentBankId}&practiceType=1`
-        + `&title=${encodeURIComponent('顺序练习')}`
-        + `&bankName=${encodeURIComponent(this.data.currentBankName || '')}`
-    })
-  },
-
-  // 随机练习
-  onRandomPractice() {
-    if (!this.data.currentBankId) {
-      wx.showToast({ title: '请先选择题库', icon: 'none' })
-      return
-    }
-    // 检查登录状态
-    if (!this.checkLogin()) {
-      return
-    }
-    wx.navigateTo({
-      url: `/pages/practice/practice?bankId=${this.data.currentBankId}&practiceType=2`
-        + `&title=${encodeURIComponent('随机练习')}`
-        + `&bankName=${encodeURIComponent(this.data.currentBankName || '')}`
-    })
-  },
-
-  // 错题练习
-  onWrongPractice() {
-    // 检查登录状态
-    if (!this.checkLogin()) {
-      return
-    }
-    if (this.data.stats.wrongCount === 0) {
-      wx.showToast({ title: '暂无错题', icon: 'none' })
-      return
-    }
-    wx.navigateTo({
-      url: `/pages/wrong/wrong?bankId=${this.data.currentBankId}`
-    })
-  },
-
-  // 我的收藏
-  onFavoriteTap() {
-    // 检查登录状态
-    if (!this.checkLogin()) {
-      return
-    }
-    wx.navigateTo({
-      url: `/pages/favorite/favorite?bankId=${this.data.currentBankId}`
-    })
-  },
-
-  // 进入教育学背诵模块
+  // 进「趣味背诵」模块首页
   goEduModule() {
     wx.navigateTo({ url: '/pages/edu/index' })
   },
 
-  // 下拉刷新
+  // 下拉刷新：一级页只需重拉题库列表
   async onPullDownRefresh() {
-    if (this.data.viewMode === 'bankDetail' && this.data.currentBankId) {
-      await this.loadCategories(this.data.currentBankId)
-      await this.loadStats()
-    } else {
-      await this.loadBanks()
-    }
+    await this.loadBanks()
     wx.stopPullDownRefresh()
   },
 
