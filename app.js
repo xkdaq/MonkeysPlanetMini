@@ -60,5 +60,9 @@ App({
     this.globalData.userInfo = null
     wx.removeStorageSync('token')
     wx.removeStorageSync('userInfo')
+    // 跟账号绑定的本地缓存也要一起清，否则换账号后
+    // 下一个人会在「我的」看到上一个账号的学习概览
+    wx.removeStorageSync('profileStats')
+    wx.removeStorageSync('pendingBank')
   }
 })

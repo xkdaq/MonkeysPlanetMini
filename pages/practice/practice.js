@@ -693,7 +693,12 @@ Page({
       content: '确定要重新开始练习吗？当前进度将丢失。',
       success: (res) => {
         if (res.confirm) {
+          // 同时清掉存档，与恢复弹窗里的「重新开始」保持一致。
+          // 开了「继续上次练习不再询问」后不再弹恢复框，这里就是唯一的重来入口，
+          // 只重置内存而不清存档的话，中途杀进程会把旧进度又恢复回来。
+          wx.removeStorageSync(this.getProgressKey())
           this.setData({
+            savedProgress: null,
             currentIndex: 0,
             answerRecords: [],
             correctCount: 0,

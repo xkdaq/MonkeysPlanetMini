@@ -58,7 +58,7 @@
   flex: 1;
   height: 6rpx;
   border-radius: 4rpx;
-  background: #dfeee7;
+  background: var(--primary-line);
   overflow: hidden;
 }
 

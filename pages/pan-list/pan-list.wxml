@@ -36,6 +36,8 @@
   </view>
 
   <!-- 加载状态 -->
+  <!-- 首屏加载：之前靠 wx.showLoading 全屏蒙层，去掉蒙层后这里必须有占位，否则首屏纯空白 -->
+  <view wx:if="{{isLoading && list.length === 0}}" class="loading">加载中...</view>
   <view wx:if="{{loadingMore}}" class="loading">加载中...</view>
   <view wx:if="{{!hasMore && list.length > 0}}" class="no-more">没有更多了</view>
 

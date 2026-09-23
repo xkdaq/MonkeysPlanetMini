@@ -8,6 +8,10 @@ const { processResponse, generateSign } = require('./crypto.js')
 const clearLoginState = () => {
   wx.removeStorageSync('token')
   wx.removeStorageSync('userInfo')
+  // 401 自动登出走的是这里，跟账号绑定的缓存必须一并清，
+  // 否则换账号后上一个账号的学习概览会留在「我的」页
+  wx.removeStorageSync('profileStats')
+  wx.removeStorageSync('pendingBank')
 }
 
 // 请求拦截器

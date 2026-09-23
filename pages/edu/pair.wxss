@@ -205,7 +205,7 @@
   font-size: 22rpx;
   line-height: 1.5;
   border: 2rpx solid var(--border-color);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
 .card.q,

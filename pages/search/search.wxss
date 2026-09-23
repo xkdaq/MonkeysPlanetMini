@@ -9,7 +9,7 @@
   align-items: center;
   background: var(--white);
   padding: 20rpx 24rpx;
-  border-bottom: 1rpx solid var(--border-color);
+  border-bottom: 2rpx solid var(--border-color);
 }
 
 .search-icon-wrap {
@@ -85,7 +85,7 @@
 
 .top-tag {
   background: var(--white);
-  border: 1rpx solid var(--primary-color);
+  border: 2rpx solid var(--primary-color);
   color: var(--primary-color);
   font-size: 20rpx;
   padding: 2rpx 10rpx;
@@ -117,7 +117,7 @@
   padding: 2rpx 12rpx;
   border-radius: 6rpx;
   background: var(--white);
-  border: 1rpx solid var(--text-deco);
+  border: 2rpx solid var(--text-deco);
   color: var(--text-secondary);
 }
 
@@ -161,7 +161,7 @@
 
 .list-item {
   padding: 24rpx 0;
-  border-bottom: 1rpx solid var(--border-color);
+  border-bottom: 2rpx solid var(--border-color);
 }
 
 .list-item:last-child {

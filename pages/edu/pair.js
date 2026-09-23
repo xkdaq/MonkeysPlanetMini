@@ -61,7 +61,31 @@ Page({
 
   onUnload() {
     this.stopClock()
+    this.clearPendingTimers()
     this.save()
+  },
+
+  /**
+   * 统一登记延时任务，页面销毁时一并清掉。
+   * 通关后有一条 900ms 的「自动进下一关」延时，如果用户在这 900ms 内退出，
+   * 定时器仍会触发 startLevel，而 startLevel 里会 startClock()——
+   * 于是在已销毁的页面上新建了一个永远不会被清除的 interval。
+   */
+  later(fn, ms) {
+    this._timers = this._timers || []
+    const id = setTimeout(() => {
+      this._timers = (this._timers || []).filter((t) => t !== id)
+      if (this._destroyed) return
+      fn()
+    }, ms)
+    this._timers.push(id)
+    return id
+  },
+
+  clearPendingTimers() {
+    this._destroyed = true
+    ;(this._timers || []).forEach((id) => clearTimeout(id))
+    this._timers = []
   },
 
   onHide() {
@@ -369,7 +393,7 @@ Page({
       card.bad = true
       this.buzz('heavy')
       this.paint()
-      setTimeout(() => {
+      this.later(() => {
         first.bad = false
         card.bad = false
         first.sel = false
@@ -400,7 +424,7 @@ Page({
       const wi = (this._wrongSet || []).indexOf(card.ref)
       if (wi > -1) this._wrongSet.splice(wi, 1)
 
-      setTimeout(() => {
+      this.later(() => {
         first.done = true
         card.done = true
         first.good = false
@@ -443,7 +467,7 @@ Page({
       wx.showToast({ title: '不匹配', icon: 'none', duration: 1000 })
     }
 
-    setTimeout(() => {
+    this.later(() => {
       first.bad = false
       card.bad = false
       first.sel = false
@@ -491,7 +515,7 @@ Page({
         materialId: idx + 1,
         materialTitle: LEVELS[idx].name
       })
-      setTimeout(() => {
+      this.later(() => {
         this.startLevel(idx + 1, true)
       }, 900)
     } else {
@@ -540,7 +564,7 @@ Page({
     this.paint()
     this.save()
 
-    setTimeout(() => {
+    this.later(() => {
       this.clearHint()
       this.paint()
     }, 3000)

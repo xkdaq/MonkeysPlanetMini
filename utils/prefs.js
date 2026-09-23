@@ -64,21 +64,54 @@ function setPracticeMode(mode) {
   } catch (e) { /* 忽略 */ }
 }
 
+// 旧版把连连看的偏好塞在存档对象 edu_pair_v1 的字段里，
+// 这里记录「独立 key ← 旧存档字段」的对应关系，供自动迁移用
+const LEGACY_PAIR_KEY = 'edu_pair_v1'
+const LEGACY_PAIR_FIELDS = { vibrate: 'vibrate', pairReveal: 'reveal' }
+
+function readLegacyPair(name) {
+  const field = LEGACY_PAIR_FIELDS[name]
+  if (!field) return undefined
+  try {
+    const d = wx.getStorageSync(LEGACY_PAIR_KEY)
+    const obj = typeof d === 'string' ? JSON.parse(d) : d
+    if (obj && typeof obj[field] === 'boolean') return obj[field]
+  } catch (e) { /* 旧档读不出来就按没有处理 */ }
+  return undefined
+}
+
 /**
  * 一次性迁移：把旧版塞在功能页存档里的偏好搬到独立 key。
  * 只在独立 key 还不存在时才搬，搬完不再回头读旧字段；
  * 不做的话老用户升级后既有选择会全部回落默认值。
+ *
+ * legacyValue 省略时会自己去 edu_pair_v1 里找——这样设置页和连连看页
+ * 谁先被打开都能触发迁移。之前迁移只写在连连看页里，老用户升级后
+ * 如果先进设置页，看到的会是默认值而不是自己的真实设置。
+ *
  * @param {string} name 偏好名
- * @param {*} legacyValue 旧存档里的值（undefined 表示旧档也没有）
+ * @param {*} [legacyValue] 旧存档里的值；不传则自动从旧存档读取
  */
 function migrateBoolOnce(name, legacyValue) {
   const raw = readRaw(KEYS[name])
   if (raw === '1' || raw === '0') return getBool(name)   // 已迁移过
-  if (typeof legacyValue === 'boolean') {
-    setBool(name, legacyValue)
-    return legacyValue
+
+  const legacy = typeof legacyValue === 'boolean' ? legacyValue : readLegacyPair(name)
+  if (typeof legacy === 'boolean') {
+    setBool(name, legacy)
+    // setBool 内部吞掉了写失败（存储配额满等），这里回读确认。
+    // 没写成就返回旧值本身，至少本次会话内表现是对的，下次还会再试着迁移。
+    return legacy
   }
   return DEFAULTS[name]
+}
+
+/**
+ * 读布尔偏好，并在独立 key 尚不存在时自动完成迁移。
+ * 设置页用这个，避免「还没打开过连连看就先进设置页」时显示默认值。
+ */
+function getBoolMigrated(name) {
+  return LEGACY_PAIR_FIELDS[name] ? migrateBoolOnce(name) : getBool(name)
 }
 
 module.exports = {
@@ -88,5 +121,6 @@ module.exports = {
   setBool,
   getPracticeMode,
   setPracticeMode,
-  migrateBoolOnce
+  migrateBoolOnce,
+  getBoolMigrated
 }

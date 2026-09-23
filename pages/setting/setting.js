@@ -44,8 +44,10 @@ Page({
       practiceMode: prefs.getPracticeMode(),
       autoResume: prefs.getBool('autoResume'),
       noRepeat: prefs.getBool('wheelNoRepeat'),
-      vibrate: prefs.getBool('vibrate'),
-      pairReveal: prefs.getBool('pairReveal')
+      // 用带迁移的读法：老用户可能还没打开过连连看，
+      // 偏好仍留在旧存档 edu_pair_v1 里，直接 getBool 会显示成默认值
+      vibrate: prefs.getBoolMigrated('vibrate'),
+      pairReveal: prefs.getBoolMigrated('pairReveal')
     })
   },
 

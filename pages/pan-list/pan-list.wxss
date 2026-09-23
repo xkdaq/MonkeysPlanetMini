@@ -98,7 +98,7 @@
 
 .top-tag {
   background: var(--white);
-  border: 1rpx solid var(--primary-color);
+  border: 2rpx solid var(--primary-color);
   color: var(--primary-color);
   font-size: 20rpx;
   padding: 2rpx 10rpx;
@@ -131,7 +131,7 @@
   padding: 2rpx 12rpx;
   border-radius: 6rpx;
   background: var(--white);
-  border: 1rpx solid var(--text-deco);
+  border: 2rpx solid var(--text-deco);
   color: var(--text-secondary);
 }
 

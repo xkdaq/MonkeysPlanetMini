@@ -323,7 +323,7 @@
   align-items: center;
   margin-bottom: 20rpx;
   padding-bottom: 16rpx;
-  border-bottom: 1rpx solid var(--border-color);
+  border-bottom: 2rpx solid var(--border-color);
 }
 
 .analysis-label {

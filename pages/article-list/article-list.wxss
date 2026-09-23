@@ -9,7 +9,7 @@
   align-items: center;
   background-color: #fff;
   padding: 20rpx 24rpx;
-  border-bottom: 1rpx solid var(--border-color);
+  border-bottom: 2rpx solid var(--border-color);
 }
 
 .search-icon-wrap {
@@ -56,7 +56,7 @@
 
 .list-item {
   padding: 24rpx 0;
-  border-bottom: 1rpx solid var(--border-color);
+  border-bottom: 2rpx solid var(--border-color);
 }
 
 .list-item:last-child {
@@ -71,7 +71,7 @@
 
 .top-tag {
   background: var(--white);
-  border: 1rpx solid var(--primary-color);
+  border: 2rpx solid var(--primary-color);
   color: var(--primary-color);
   font-size: 20rpx;
   padding: 2rpx 10rpx;
