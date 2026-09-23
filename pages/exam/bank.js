@@ -193,6 +193,11 @@ Page({
 
   // 练习跳转统一出口：带上题库名，供「继续上次练习」展示
   gotoPractice(params) {
+    // 兜底：正常情况下 bankId 缺失时快捷入口就不渲染，这里防的是异常调用路径
+    if (!this.data.bankId) {
+      wx.showToast({ title: '题库参数缺失', icon: 'none' })
+      return
+    }
     const parts = [`bankId=${this.data.bankId}`, `bankName=${encodeURIComponent(this.data.bankName || '')}`]
     Object.keys(params).forEach((k) => {
       parts.push(`${k}=${params[k]}`)
@@ -242,12 +247,20 @@ Page({
   // 错题练习
   onWrongPractice() {
     if (!this.checkLogin()) return
+    if (!this.data.bankId) {
+      wx.showToast({ title: '题库参数缺失', icon: 'none' })
+      return
+    }
     wx.navigateTo({ url: `/pages/wrong/wrong?bankId=${this.data.bankId}` })
   },
 
   // 我的收藏
   onFavoriteTap() {
     if (!this.checkLogin()) return
+    if (!this.data.bankId) {
+      wx.showToast({ title: '题库参数缺失', icon: 'none' })
+      return
+    }
     wx.navigateTo({ url: `/pages/favorite/favorite?bankId=${this.data.bankId}` })
   },
 

@@ -8,8 +8,8 @@
     <view class="detail-bank-desc">{{bankDesc || '选择分类或练习方式开始刷题'}}</view>
   </view>
 
-  <!-- 快捷入口 -->
-  <view class="quick-actions">
+  <!-- 快捷入口（题库参数缺失时不渲染，否则会拼出 bankId=null 的练习链接） -->
+  <view class="quick-actions" wx:if="{{bankId}}">
     <view class="action-item" hover-class="action-item-hover" hover-start-time="0" hover-stay-time="70" bindtap="onOrderPractice">
       <view class="action-icon">
         <image src="/images/exam-order.png" mode="aspectFit" class="action-icon-img"/>
